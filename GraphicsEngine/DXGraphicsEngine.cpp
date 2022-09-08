@@ -172,22 +172,22 @@ void DXGraphicsEngine::BindPostProcessPass(std::wstring passName)
 			switch (renderTargetInfo.m_ResourceSource)
 			{
 			case SHADER_RENDER_TARGET::BACKBUFFER:
-			{
-				BindingRenderTargets.push_back(m_SwapChain->GetBackBufferRenderTarget());
-				backbufferCnt++;
-			}
+				{
+					BindingRenderTargets.push_back(m_SwapChain->GetBackBufferRenderTarget());
+					backbufferCnt++;
+				}
 				break;
 			case SHADER_RENDER_TARGET::PASS:
-			{
-				BindingRenderTargets.push_back(m_BindingPass->GetRenderTargetView(passCnt));
-			}
+				{
+					BindingRenderTargets.push_back(m_BindingPass->GetRenderTargetView(passCnt));
+				}
 				break;
 			default:
 				break;
 			}
 		}
 
-		m_Device->GetContext()->OMSetRenderTargets(BindingRenderTargets.size(), BindingRenderTargets[0].GetAddressOf(), m_DepthStencilView->GetDepthStencilView().Get());
+		m_Device->GetContext()->OMSetRenderTargets(BindingRenderTargets.size(), BindingRenderTargets[0].GetAddressOf(), m_BasicPass->GetDepthStencilView()->GetDepthStencilView().Get());
 	}
 }
 
@@ -254,27 +254,27 @@ void DXGraphicsEngine::SetTexture(GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT* r
 
 		switch (inputlayout.m_ResourceSource)
 		{
-			case SHADER_RESOURCE_SOURCE::BACKBUFFER:
+		case SHADER_RESOURCE_SOURCE::BACKBUFFER:
 			{
 				//bindingTextures.emplace_back(m_BasicPass->GetShaderResourceView());
-				
+
 				break;
 			}
 
 		case SHADER_RESOURCE_SOURCE::BASICPASS:
-		{
-			bindingTextures.push_back(m_BasicPass->GetShaderResourceView((UINT)inputlayout.m_ResourceIndex));
-		}
-		break;
+			{
+				bindingTextures.push_back(m_BasicPass->GetShaderResourceView((UINT)inputlayout.m_ResourceIndex));
+			}
+			break;
 		case SHADER_RESOURCE_SOURCE::OTHERPASS:
-		{
-			bindingTextures.push_back(m_ResourceManager->GetPass(inputlayout.m_ResourceName)->GetShaderResourceView((UINT)inputlayout.m_ResourceIndex));
-		}
-		break;
+			{
+				bindingTextures.push_back(m_ResourceManager->GetPass(inputlayout.m_ResourceName)->GetShaderResourceView((UINT)inputlayout.m_ResourceIndex));
+			}
+			break;
 		case SHADER_RESOURCE_SOURCE::TEXTURE:
-		{
-			bindingTextures.push_back(m_ResourceManager->GetTexture(inputlayout.m_ResourceIndex)->GetTextureSRV());
-		}
+			{
+				bindingTextures.push_back(m_ResourceManager->GetTexture(inputlayout.m_ResourceIndex)->GetTextureSRV());
+			}
 			break;
 		default:
 			break;
@@ -428,7 +428,7 @@ void DXGraphicsEngine::Render_Execute(size_t MeshID, void* bufferSrc)
 void DXGraphicsEngine::Present_Execute()
 {
 	auto context = m_Device->GetContext();
-	
+
 	m_BasicPass->End(m_Device);
 
 	context->OMSetDepthStencilState(m_BasicPass->GetDepthStencilView()->GetDisableDepthStencilState().Get(), 0);
