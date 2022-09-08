@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="pch">
+      <UniqueIdentifier>{57d7bbfc-8bed-4c54-9a96-7326df844870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine">
+      <UniqueIdentifier>{c8d9cc0a-ca9a-41fb-be78-a7e6f29c4845}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\Interface">
+      <UniqueIdentifier>{418b3f51-5dda-4f71-9227-15414a968c8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dll">
+      <UniqueIdentifier>{f5907d0f-a8aa-480d-a0cd-3c70873bf5a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\EngineFactory">
+      <UniqueIdentifier>{c15ab602-b7b7-49b0-ad09-14ca8d078c1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11">
+      <UniqueIdentifier>{7bb87a12-1442-49ca-8a50-c0a9fcddbc10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\GraphicEngine">
+      <UniqueIdentifier>{18dc2113-938a-43b5-82f0-e676d3fff289}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\DepthStencilView">
+      <UniqueIdentifier>{a3c0576f-34a7-495f-b729-48fa85b7857c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\SwapChain">
+      <UniqueIdentifier>{24cd852f-67ce-4b8d-ace6-36a6b2b17f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\ResourceManager">
+      <UniqueIdentifier>{69f97a38-84bb-4903-992c-23b335667b11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Macro">
+      <UniqueIdentifier>{e4ab73b3-a084-4c14-bf79-443fc94d7c5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Device">
+      <UniqueIdentifier>{ffb4f615-bf5c-447d-bf89-2fea96cb16f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\RenderStruct">
+      <UniqueIdentifier>{7de10949-3ad1-4c7b-aa1f-5a324fb99354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources">
+      <UniqueIdentifier>{279ecbed-05f2-466e-9c81-dcf85b477357}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\VertexShader">
+      <UniqueIdentifier>{3a11fdea-9d29-429f-b261-8e7ead713907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\PixelShader">
+      <UniqueIdentifier>{8419e9ce-698c-45b5-baf0-5f1775871353}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\Buffers">
+      <UniqueIdentifier>{f4be773b-c707-4555-af98-67cdd92a11ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\Buffers\IndexBuffer">
+      <UniqueIdentifier>{1be5a315-5258-45ad-9c96-814804309b30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\Buffers\ConstantBuffer">
+      <UniqueIdentifier>{69eeca7b-957d-425a-9c43-fc87a5b44739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\Buffers\VertexBuffer">
+      <UniqueIdentifier>{c6c963e1-c4f9-44ee-9682-1b7b795161ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\ShaderBase">
+      <UniqueIdentifier>{9b9024a9-398b-4d4b-ace4-5a2b33729f16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicsEngine\Interface\ResourceManager">
+      <UniqueIdentifier>{96826545-4fd2-445e-a15e-bdfc6e232b98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\Buffers\TextureResourceBuffer">
+      <UniqueIdentifier>{9cc2afd7-0722-46a6-b14e-789eb95ed9d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\Texture">
+      <UniqueIdentifier>{53832d2f-605f-4471-9061-c7c4ae045115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\Sampler">
+      <UniqueIdentifier>{3dd53682-ed61-4dd3-94f8-80123befa610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\Resources\Buffers\SamplerBuffer">
+      <UniqueIdentifier>{bf1694e3-aab3-402f-b7c1-9bfc1b52eae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\RenderInfoManager">
+      <UniqueIdentifier>{e5841716-33ee-4744-b7b9-d43f928acb2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\RenderTargetView">
+      <UniqueIdentifier>{550e05a8-d117-4ef8-a7f0-a0ce4b8cf003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\RenderMessage">
+      <UniqueIdentifier>{0955ab6b-2f24-47ee-ad3e-0e51342b6f10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\RenderPass">
+      <UniqueIdentifier>{ccdb5b7c-1fdb-4ad5-ab9a-58b0fcbef2b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\RenderPass\BasicPass">
+      <UniqueIdentifier>{0a2baba8-ebcb-4684-a27c-0af57cf0ea47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\RenderPass\PostProcessRenderPass">
+      <UniqueIdentifier>{3ae6e869-3e30-4fa4-9378-1af3c965a985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DX11\RenderPass\PassBase">
+      <UniqueIdentifier>{b09bbb52-878c-4e29-8d74-501b8afba854}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="IGraphicsEngine.h">
+      <Filter>GraphicsEngine\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="dllDefine.h">
+      <Filter>dll</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsEngineFactory.h">
+      <Filter>GraphicsEngine\EngineFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="IResourceManager.h">
+      <Filter>GraphicsEngine\Interface\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="DXGraphicsEngine.h">
+      <Filter>DX11\GraphicEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="DXResourceManager.h">
+      <Filter>DX11\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="DXMacro.h">
+      <Filter>DX11\Macro</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilView.h">
+      <Filter>DX11\DepthStencilView</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTargetView.h">
+      <Filter>DX11\RenderTargetView</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>DX11\SwapChain</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>DX11\Resources\Buffers\IndexBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>DX11\Resources\Buffers\VertexBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>DX11\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderStruct.h">
+      <Filter>DX11\RenderStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>DX11\Resources\PixelShader</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>DX11\Resources\VertexShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>DX11\Resources\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>DX11\Resources\Buffers\ConstantBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderBase.h">
+      <Filter>DX11\Resources\ShaderBase</Filter>
+    </ClInclude>
+    <ClInclude Include="dllRenderStruct.h">
+      <Filter>DX11\RenderStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureResourceBuffer.h">
+      <Filter>DX11\Resources\Buffers\TextureResourceBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerState.h">
+      <Filter>DX11\Resources\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerBuffer.h">
+      <Filter>DX11\Resources\Buffers\SamplerBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderInfoManager.h">
+      <Filter>DX11\RenderInfoManager</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderMessagePool.h">
+      <Filter>DX11\RenderMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderMessageQueue.h">
+      <Filter>DX11\RenderMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderMessage.h">
+      <Filter>DX11\RenderMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPass.h">
+      <Filter>DX11\RenderPass\BasicPass</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessRenderPass.h">
+      <Filter>DX11\RenderPass\PostProcessRenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPassBase.h">
+      <Filter>DX11\RenderPass\PassBase</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>pch</Filter>
+    </ClCompile>
+    <ClCompile Include="IGraphicsEngine.cpp">
+      <Filter>GraphicsEngine\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>dll</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsEngineFactory.cpp">
+      <Filter>GraphicsEngine\EngineFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="IResourceManager.cpp">
+      <Filter>GraphicsEngine\Interface\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="DXGraphicsEngine.cpp">
+      <Filter>DX11\GraphicEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="DXResourceManager.cpp">
+      <Filter>DX11\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="DXMacro.cpp">
+      <Filter>DX11\Macro</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilView.cpp">
+      <Filter>DX11\DepthStencilView</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTargetView.cpp">
+      <Filter>DX11\RenderTargetView</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.cpp">
+      <Filter>DX11\SwapChain</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>DX11\Resources\Buffers\IndexBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>DX11\Resources\Buffers\VertexBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>DX11\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderStruct.cpp">
+      <Filter>DX11\RenderStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>DX11\Resources\PixelShader</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>DX11\Resources\VertexShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>DX11\Resources\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>DX11\Resources\Buffers\ConstantBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderBase.cpp">
+      <Filter>DX11\Resources\ShaderBase</Filter>
+    </ClCompile>
+    <ClCompile Include="dllRenderStruct.cpp">
+      <Filter>DX11\RenderStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureResourceBuffer.cpp">
+      <Filter>DX11\Resources\Buffers\TextureResourceBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerState.cpp">
+      <Filter>DX11\Resources\Sampler</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerBuffer.cpp">
+      <Filter>DX11\Resources\Buffers\SamplerBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderInfoManager.cpp">
+      <Filter>DX11\RenderInfoManager</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderMessagePool.cpp">
+      <Filter>DX11\RenderMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderMessageQueue.cpp">
+      <Filter>DX11\RenderMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderMessage.cpp">
+      <Filter>DX11\RenderMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPass.cpp">
+      <Filter>DX11\RenderPass\BasicPass</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessRenderPass.cpp">
+      <Filter>DX11\RenderPass\PostProcessRenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPassBase.cpp">
+      <Filter>DX11\RenderPass\PassBase</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

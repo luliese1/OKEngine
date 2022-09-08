@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>E:\SVN\3D Graphics Engine Assignment\S1_Engine\3_OhKyungMin\OKEngine\x64\Debug\Shader.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>E:\SVN\3D Graphics Engine Assignment\S1_Engine\3_OhKyungMin\OKEngine\x64\Debug\VetexShader_StaticMesh.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>E:\SVN\3D Graphics Engine Assignment\S1_Engine\3_OhKyungMin\OKEngine\x64\Debug\PixelShader_StaticMesh.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="pch">
+      <UniqueIdentifier>{af577346-b576-469e-b1d5-13c328f57dd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine">
+      <UniqueIdentifier>{d4feead0-df8c-4783-886d-c1178778f4f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Interface">
+      <UniqueIdentifier>{3307f2e1-26a7-414d-8c86-3dacaf9b5f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dll">
+      <UniqueIdentifier>{97ef9ade-40c0-4e5b-a8af-92e3e06d3fde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\GameEngineFactory">
+      <UniqueIdentifier>{cfcb30ed-2ac3-44e8-98d5-22a726f4b7be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{a7e0cf56-fe1c-4c88-ab1b-e3aa209fa029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component">
+      <UniqueIdentifier>{726bae3a-d7a8-4d26-91f7-f5b009f9c392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Mesh">
+      <UniqueIdentifier>{c1e6ebde-6e5a-4db3-9876-81d265cd2200}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Transform">
+      <UniqueIdentifier>{5ef1f04f-0aa6-45ac-be3e-2cd544a09ff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\ComponentBase">
+      <UniqueIdentifier>{31aecc1e-9245-4279-96c5-5d4ac494b856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{c8fccf08-80e3-45ed-9a8f-51455f2e16d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Camera">
+      <UniqueIdentifier>{d02a192c-bf11-4daf-823c-260e9ef0e913}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Animation">
+      <UniqueIdentifier>{6b2cbfef-dd8c-4bdb-9335-5b1aac018de2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{29ac9312-610f-437e-b2e5-d2c229f9d8b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\CameraObject">
+      <UniqueIdentifier>{1450db3e-1912-4fcd-8d85-a34006ccb73f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\UI">
+      <UniqueIdentifier>{3c958263-aab9-4118-9eff-ff395ff76293}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Collider">
+      <UniqueIdentifier>{45a1838a-7063-47fd-8bfc-9e427ef0b620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ResourceHashTable">
+      <UniqueIdentifier>{3c6396e1-cc55-4fa5-be0c-184dc1e0e6b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Camera\Controller">
+      <UniqueIdentifier>{7c29a311-ce4b-40ee-afea-d2a3ec2d42e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Light">
+      <UniqueIdentifier>{8c337f8a-d565-4366-8d68-1deb52a2e418}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util\DataStruct">
+      <UniqueIdentifier>{5b416b67-b568-446c-8ce0-9f38c6f42b4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{4ab4ff7a-379e-41e4-8027-f0b31c1c2500}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\MeshRenderer">
+      <UniqueIdentifier>{9aaf9c0d-9562-4d67-9da7-7b87f5b013fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\TransformUpdater">
+      <UniqueIdentifier>{50513fd0-6fb6-4dc7-8e5b-b73b273b55b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\CollisionUpdater">
+      <UniqueIdentifier>{279629e1-f879-42f0-a8e0-2bb1c72eefcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\SceneManager">
+      <UniqueIdentifier>{77e0f27c-08fd-4a3f-9495-2102e54ce364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\ModelLoader">
+      <UniqueIdentifier>{16a618d4-bdef-4a6e-beea-19d5f5f078aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\Input">
+      <UniqueIdentifier>{c0ad14d2-c05e-4443-9b25-c147b80abec1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\Time">
+      <UniqueIdentifier>{ec8babfa-293b-4283-b05c-8dd53dad0769}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Light\Spot">
+      <UniqueIdentifier>{775bbb65-8515-4ee0-9694-0ceec7ed1c41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Light\Directional">
+      <UniqueIdentifier>{709d8b1d-2076-4774-b185-80f62dbaee34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Light\Point">
+      <UniqueIdentifier>{d5073324-1e68-427f-97ad-6589b3688c09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers\GeometryGenerator">
+      <UniqueIdentifier>{049e9ec8-8f10-4bcc-b0b4-323b8ba9aca8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EnginePCH.h">
+      <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="OKEngine.h">
+      <Filter>GameEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameEngine.h">
+      <Filter>GameEngine\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="dllDefine.h">
+      <Filter>dll</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEngineFactory.h">
+      <Filter>GameEngine\GameEngineFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentBase.h">
+      <Filter>Component\ComponentBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Component\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Component\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="AlignedAllocationPolicy.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyframAnimation.h">
+      <Filter>Component\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>Managers\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Managers\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Managers\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraObject.h">
+      <Filter>GameObject\CameraObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Component\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>Managers\MeshRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderUpdater.h">
+      <Filter>Managers\CollisionUpdater</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformUpdater.h">
+      <Filter>Managers\TransformUpdater</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStruct.h">
+      <Filter>Util\DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Component\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ColliderBase.h">
+      <Filter>Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceHashTable.h">
+      <Filter>ResourceHashTable</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>Component\Camera\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>Managers\ModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="LightBase.h">
+      <Filter>Component\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Component\Light\Directional</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Component\Light\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLIght.h">
+      <Filter>Component\Light\Spot</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>Managers\GeometryGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMesh.h">
+      <Filter>Component\Mesh</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="EnginePCH.cpp">
+      <Filter>pch</Filter>
+    </ClCompile>
+    <ClCompile Include="OKEngine.cpp">
+      <Filter>GameEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="IGameEngine.cpp">
+      <Filter>GameEngine\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>dll</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEngineFactory.cpp">
+      <Filter>GameEngine\GameEngineFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentBase.cpp">
+      <Filter>Component\ComponentBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Component\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Component\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="AlignedAllocationPolicy.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyframAnimation.cpp">
+      <Filter>Component\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>Managers\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Managers\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Managers\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraObject.cpp">
+      <Filter>GameObject\CameraObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Component\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRenderer.cpp">
+      <Filter>Managers\MeshRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderUpdater.cpp">
+      <Filter>Managers\CollisionUpdater</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformUpdater.cpp">
+      <Filter>Managers\TransformUpdater</Filter>
+    </ClCompile>
+    <ClCompile Include="DataStruct.cpp">
+      <Filter>Util\DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Component\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderBase.cpp">
+      <Filter>Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceHashTable.cpp">
+      <Filter>ResourceHashTable</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraController.cpp">
+      <Filter>Component\Camera\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>Managers\ModelLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="LightBase.cpp">
+      <Filter>Component\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Component\Light\Directional</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Component\Light\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLIght.cpp">
+      <Filter>Component\Light\Spot</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>Managers\GeometryGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>Component\Mesh</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

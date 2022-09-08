@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ASEParser">
+      <UniqueIdentifier>{b2def314-b56b-4765-b5c3-0719c4129694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ASEParser\DataClass">
+      <UniqueIdentifier>{2ea9149e-16a9-4eb9-87b8-fe336942fe82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ASEParser\Lexer">
+      <UniqueIdentifier>{e79ec5a9-3cbe-4a58-a8a5-2ed3dba65fbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ASEParser\pch">
+      <UniqueIdentifier>{fae77025-ac6b-4426-a078-97f08beddb3b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ASEFile.h">
+      <Filter>ASEParser</Filter>
+    </ClInclude>
+    <ClInclude Include="ASEData.h">
+      <Filter>ASEParser\DataClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Lexer.h">
+      <Filter>ASEParser\Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="ASEParser.h">
+      <Filter>ASEParser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parserpch.h">
+      <Filter>ASEParser\pch</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ASEFile.cpp">
+      <Filter>ASEParser</Filter>
+    </ClCompile>
+    <ClCompile Include="ASEData.cpp">
+      <Filter>ASEParser\DataClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Lexer.cpp">
+      <Filter>ASEParser\Lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="ASEParser.cpp">
+      <Filter>ASEParser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parserpch.cpp">
+      <Filter>ASEParser\pch</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
