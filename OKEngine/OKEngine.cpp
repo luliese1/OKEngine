@@ -9,20 +9,21 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	m_GraphicsEngine = GraphicsEngine::GraphicsEngineFactory::CreateDXGraphicsEngine();
 
 	GRAPHICSENGINE_ENGINE_DESC EngineDesc;
+	// --------------------------  Graphics Initialize ----------------------------
 
 	EngineDesc.handle = handle;
 	EngineDesc.instance = instance;
 	EngineDesc.ScreenWidth = ScreenWidth;
 	EngineDesc.ScreenHeight = ScreenHeight;
 
+	m_GraphicsEngine->Initialize(EngineDesc);
 
-	/// <summary>
-	/// Graphics Initialize
-	/// </summary>
-	std::vector<GRAPHICSENGINE_PASS_DESC> PassDesc;
+	// --------------------------  RenderPass  ----------------------------
 
 	GRAPHICSENGINE_PASS_DESC BasicPass;
-	// -------------------------- Static Mesh Shader ----------------------------
+	BasicPass.m_PassName = L"Basic";
+
+	// -------------------------- Mesh Shader ----------------------------
 
 	std::vector<std::vector<GRAPHICSENGINE_SHADER_MACRO_DESC>> staticmacros =
 	{
@@ -30,27 +31,58 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	 {{"USING_ALBEDO", NULL}, {"USING_NORMALMAP", NULL}}
 	};
 
-	std::wstring vsStatic = L"./Shader/VetexShader_Mesh.hlsl";
-	std::wstring psStatic = L"./Shader/PixelShader_Mesh.hlsl";
-
-	// -------------------------- Skinning Mesh Shader ----------------------------
-
-
-	// -------------------------- Skinning Mesh Shader ----------------------------
+	std::wstring vsMesh = L"./Shader/VetexShader_Mesh.hlsl";
+	std::wstring psMesh = L"./Shader/PixelShader_Mesh.hlsl";
 
 	GRAPHICSENGINE_SHADER_DESC BaseShaderDesc[] =
 	{
-		{L"NoneTexStatic", vsStatic, psStatic, nullptr, 0 },
-		{L"TexStatic", vsStatic, psStatic , &staticmacros[0].front(), (UINT)staticmacros[0].size()},
-		{L"TexNormalStatic", vsStatic, psStatic, &staticmacros[1].front(), (UINT)staticmacros[1].size()},
+		{L"NoneTexStatic", vsMesh, psMesh, nullptr, 0 },
+		{L"TexStatic", vsMesh, psMesh , &staticmacros[0].front(), (UINT)staticmacros[0].size()},
+		{L"TexNormalStatic", vsMesh, psMesh, &staticmacros[1].front(), (UINT)staticmacros[1].size()},
+	};
+
+	GRAPHICSENGINE_RENDER_TARGET_OUTPUT_LAYOUT BaseShaderOutput[] =
+	{
+		{SHADER_RENDER_TARGET::PASS, L""},
+		{SHADER_RENDER_TARGET::PASS, L""},
+		{SHADER_RENDER_TARGET::PASS, L""},
+		{SHADER_RENDER_TARGET::PASS, L""},
+		{SHADER_RENDER_TARGET::PASS, L""}
 	};
 
 	BasicPass.m_ShaderDesc = BaseShaderDesc;
 	BasicPass.m_ShaderCount = 3;
+	BasicPass.m_RenderTargetLayout = BaseShaderOutput;
 	BasicPass.m_OutputTexturesCount = 4;
 
-	EngineDesc.m_BasicPass = &BasicPass;
-	m_GraphicsEngine->Initialize(EngineDesc);
+	m_GraphicsEngine->CreateRenderPass(BasicPass);
+
+	// -------------------------- Shadow Shader ----------------------------
+
+	GRAPHICSENGINE_PASS_DESC ShadowPass;
+	ShadowPass.m_PassName = L"Shadow";
+
+	std::wstring psShadow = L"./Shader/PixelShader_Shadow.hlsl";
+
+	GRAPHICSENGINE_SHADER_DESC ShadowShaderDesc[] =
+	{
+		{L"NoneTexStatic", vsMesh, psShadow, nullptr, 0 },
+		{L"TexStatic", vsMesh, psShadow , &staticmacros[0].front(), (UINT)staticmacros[0].size()},
+		{L"TexNormalStatic", vsMesh, psShadow, &staticmacros[1].front(), (UINT)staticmacros[1].size()},
+	};
+
+	ShadowPass.m_ShaderDesc = ShadowShaderDesc;
+	ShadowPass.m_ShaderCount = 3;
+
+	GRAPHICSENGINE_RENDER_TARGET_OUTPUT_LAYOUT shadowShaderOutput[] =
+	{
+		{SHADER_RENDER_TARGET::PASS, L""}
+	};
+
+	ShadowPass.m_RenderTargetLayout = shadowShaderOutput;
+	ShadowPass.m_OutputTexturesCount = 0;
+
+	m_GraphicsEngine->CreateRenderPass(ShadowPass);
 
 	// -------------------------- Deferred Lighting ----------------------------
 
@@ -66,20 +98,20 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	LightingPass.m_ShaderDesc = LightingShaderDesc;
 	LightingPass.m_ShaderCount = 1;
 	LightingPass.m_OutputTexturesCount = 1;
-	
+
 	GRAPHICSENGINE_RENDER_TARGET_OUTPUT_LAYOUT LightRenderTargetLayouts[] =
 	{
 		{SHADER_RENDER_TARGET::BACKBUFFER, L""}
 	};
 
 	LightingPass.m_RenderTargetLayout = LightRenderTargetLayouts;
-	m_GraphicsEngine->CreateShaderPass(LightingPass);
+	m_GraphicsEngine->CreatePostProcessPass(LightingPass);
 
 	// -------------------------- Post Processing ----------------------------
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	m_SceneManager.Initialize(ScreenWidth, ScreenHeight);
 
 	Input::Init();

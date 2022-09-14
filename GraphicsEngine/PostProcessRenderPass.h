@@ -32,6 +32,8 @@ private:
 	//렌더하는데 필요한 박스(버텍스정보)
 	static std::shared_ptr<ViewBox> m_ViewBox;
 	static std::shared_ptr<VertexShader> m_VertexShader;
+	std::shared_ptr<DepthStencilView> m_DepthStencilView;
+
 	//RenderPass 쉐이더 종류의 이름 / 그에따른 쉐이더
 	 std::shared_ptr<PixelShader> m_PixelShader;
 };

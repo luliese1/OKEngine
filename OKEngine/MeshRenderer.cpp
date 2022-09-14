@@ -30,7 +30,8 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 	Graphics->StartRender();
 	Graphics->SetPerFrameConstantBuffer(&cameraInfo);
 
-	std::vector<std::pair<ObjectGUID, StaticMesh>> staticMeshInfo;
+	std::vector<ObjectGUID> staticMeshGUIDs;
+	std::vector<StaticMesh> staticMeshInfo;
 	staticMeshInfo.reserve(m_MeshQueue.size());
 
 	//컬링
@@ -40,6 +41,7 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 	//나중에 Frame단위로 데이터 보관할만하지않을까.
 
 	//이친구들은 컬링에 통과했으니... 출력한다
+
 	while (!m_MeshQueue.empty())
 	{
 		//이구조가 맞나..? 의문이 든다
@@ -52,28 +54,29 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 		tempmesh.WorldInvTranspose = tempmesh.World.Invert().Transpose();
 
 		ObjectGUID objID = mesh->GetGameObject()->GetObjectID();
-
-		staticMeshInfo.emplace_back(objID, tempmesh);
+		staticMeshGUIDs.push_back(objID);
+		staticMeshInfo.emplace_back(tempmesh);
 
 		Graphics->AddObject(objID, mesh->GetMeshInfo());
+
 		m_MeshQueue.pop();
 		//MeshInfo tempMeshInfo = mesh->GetMeshInfo();
 		//meshInfos.emplace_back(tempMeshInfo);
 	}
 
-	for (auto& info : staticMeshInfo)
-	{
-		Graphics->RenderObject(info.first, &info.second);
-	}
+	//Graphics->BindRenderPass(L"Shadow");
+	//Graphics->RenderObjects(staticMeshGUIDs.data(), staticMeshInfo.data(), sizeof(StaticMesh), staticMeshGUIDs.size());
+
+	Graphics->BindRenderPass(L"Basic");
+	Graphics->RenderObjects(staticMeshGUIDs.data(), staticMeshInfo.data(), sizeof(StaticMesh), staticMeshGUIDs.size());
 
 	LoadLightInfos();
-
 	Graphics->BindPostProcessPass(L"light");
 	GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT lightInput[] =
 	{
-		{SHADER_RESOURCE_SOURCE::BASICPASS, L"", 0},
-		{SHADER_RESOURCE_SOURCE::BASICPASS, L"", 1},
-		{SHADER_RESOURCE_SOURCE::BASICPASS, L"", 3}
+		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 0},
+		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 1},
+		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 3}
 	};
 	Graphics->SetTexture(lightInput, 3);
 	Graphics->SetPerObjectConstantBuffer((void*)&m_LightInfo);

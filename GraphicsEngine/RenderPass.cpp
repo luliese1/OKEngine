@@ -30,7 +30,6 @@ void RenderPass::Initialize(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& p
 		tempInfo.m_ScreenWidth = sinfo.m_ScreenWidth;
 	}
 
-
 	m_DepthStencilView->Initialize(device, tempInfo);
 
 	//쉐이더 셋 지정
@@ -57,12 +56,35 @@ void RenderPass::Initialize(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& p
 
 	for (int cnt = 0; cnt < m_RenderTargetTextureCnt; cnt++)
 	{
-		std::shared_ptr<RenderTargetView> tempRTT = std::make_shared<RenderTargetView>();
-		tempRTT->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, tempInfo, device);
-		m_RenderTargetTexture.emplace_back(tempRTT);
+
+		switch (passDesc.m_RenderTargetLayout[cnt].m_ResourceSource)
+		{
+		case SHADER_RENDER_TARGET::BACKBUFFER:
+			{
+				m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
+			}
+			break;
+		case SHADER_RENDER_TARGET::OTHERPASS:
+			{
+				m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
+			}
+			break;
+		case SHADER_RENDER_TARGET::PASS:
+			{
+				std::shared_ptr<RenderTargetView> tempRTT = std::make_shared<RenderTargetView>();
+				tempRTT->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, sinfo, device);
+				m_RenderTargetTexture.emplace_back(tempRTT);
+
+				m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
+			}
+			break;
+		default:
+			Assert("PostProcessingRenderPass : Initialize ShaderResourceSource Error ");
+			break;
+		}
 	}
 
-	SetRenderTargetViewListForBinding();
+	//SetRenderTargetViewListForBinding();
 }
 
 void RenderPass::Begin(std::shared_ptr<Device> device, std::shared_ptr<DepthStencilView> dsv)
@@ -73,8 +95,8 @@ void RenderPass::Begin(std::shared_ptr<Device> device, std::shared_ptr<DepthSten
 	{
 		context->ClearRenderTargetView(iter.Get(), DirectX::Colors::White);
 	}
-
-	context->OMSetRenderTargets(m_RenderTargetTextureCnt, m_BindingRenderTargetTexture[0].GetAddressOf(), dsv->GetDepthStencilView().Get());
+	context->ClearDepthStencilView(m_DepthStencilView->GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	context->OMSetDepthStencilState(m_DepthStencilView->GetDepthStencilState().Get(), 0);
 }
 
 ShaderSet RenderPass::GetShaderSet(const std::wstring& shaderName)

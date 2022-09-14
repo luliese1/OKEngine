@@ -48,6 +48,8 @@ public:
 	virtual void Present() override;
 	//렌더 및 ConstantBuffer 설정
 	virtual void RenderObject(size_t MeshID, void* ConstantBuffer) override;
+	virtual void RenderObjects(size_t* MeshID, void* ConstantBuffer, UINT ConstantBufSize, UINT objectCnt) override;
+
 	//데이터 저장 및 갈아끼우기
 	virtual void AddObject(size_t MeshID, MeshInfo meshInfo) override;
 	//게임엔진에서도 삭제되었을떄 delete를 호출해서 삭제해주자.
@@ -97,7 +99,6 @@ public:
 	void Present_Execute();
 
 private:
-	void CreateBasicPass(const GRAPHICSENGINE_PASS_DESC* shaderPassDesc);
 
 	HINSTANCE m_hInst;
 	HWND m_hWnd;
@@ -110,12 +111,12 @@ private:
 	//나중에 이친구들도 따로 Renderer로 뺴고싶지만,... 
 	std::shared_ptr<Device> m_Device;
 	std::shared_ptr<SwapChain> m_SwapChain;
-	std::shared_ptr<RenderPass> m_BasicPass;
 
 	ID3D11RasterizerState* m_SolidRS;
 	ID3D11RasterizerState* m_WireRS;
 
-	std::shared_ptr<PassBase> m_BindingPass;
+	std::shared_ptr<RenderPass> m_BindingRenderPass;
+	std::shared_ptr<PassBase> m_BindingPostProcessPass;
 
 	std::unique_ptr<DirectX::SpriteBatch> m_SpriteBatch;
 };

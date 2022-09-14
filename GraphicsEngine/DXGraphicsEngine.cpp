@@ -73,7 +73,7 @@ int DXGraphicsEngine::Initialize(GRAPHICSENGINE_ENGINE_DESC& GraphicsEngineDesc)
 	m_Device->GetContext()->RSSetViewports(1, &ViewPort);
 
 	CreateRenderState();
-	CreateBasicPass(GraphicsEngineDesc.m_BasicPass);
+	//CreateBasicPass(GraphicsEngineDesc.m_BasicPass);
 
 	m_SpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_Device->GetContext().Get());
 
@@ -98,9 +98,7 @@ void DXGraphicsEngine::OnResize(int Width, int Height)
 
 	m_Device->GetContext()->RSSetViewports(1, &ViewPort);
 
-	m_BasicPass->OnResize(m_ScreenInfo, m_Device);
 	m_ResourceManager->OnResize(m_ScreenInfo);
-
 }
 
 //std::shared_ptr<RenderMessage_BeginRender> msg = std::make_shared<RenderMessage_BeginRender>();
@@ -137,6 +135,16 @@ void DXGraphicsEngine::RenderObject(size_t MeshID, void* ConstantBuffer)
 {
 	Render_Execute(MeshID, ConstantBuffer);
 }
+
+void DXGraphicsEngine::RenderObjects(size_t* MeshID, void* ConstantBuffer, UINT ConstantBufSize, UINT objectCnt)
+{
+	for (UINT i = 0; i < objectCnt; i++)
+	{
+		Render_Execute(*(MeshID + i), ((char*)ConstantBuffer + i * ConstantBufSize));
+	}
+	m_BindingRenderPass->End(m_Device);
+}
+
 void DXGraphicsEngine::AddObject(size_t MeshID, MeshInfo meshInfo)
 {
 	m_RenderInfoManager->PushMeshInfo(MeshID, meshInfo);
@@ -148,53 +156,109 @@ void DXGraphicsEngine::DeleteObject(size_t MeshID)
 
 void DXGraphicsEngine::BindRenderPass(std::wstring passName)
 {
+	auto Foundpass = m_ResourceManager->GetPass(passName);
 
+	if (Foundpass == nullptr)
+	{
+		Assert("GraphicsEngine BindRenderPass : Pass Binding Failed ");
+	}
+	else
+	{
+
+		if (Foundpass->GetPassType() == ePassType::RenderPass)
+		{
+			m_BindingRenderPass = std::static_pointer_cast<RenderPass>(Foundpass);
+
+			m_BindingRenderPass->Begin(m_Device, m_BindingRenderPass->GetDepthStencilView());
+
+			std::vector<ComPtr<ID3D11RenderTargetView>> BindingRenderTargets;
+			UINT backbufferCnt = 0;
+			UINT passCnt = 0;
+			UINT otherpassCnt = 0;
+			
+			for (auto& renderTargetInfo : m_BindingRenderPass->GetRenderTargetInfo())
+			{
+				switch (renderTargetInfo.m_ResourceSource)
+				{
+				case SHADER_RENDER_TARGET::BACKBUFFER:
+					{
+						BindingRenderTargets.push_back(m_SwapChain->GetBackBufferRenderTarget());
+						backbufferCnt++;
+					}
+					break;
+				case SHADER_RENDER_TARGET::PASS:
+					{
+						BindingRenderTargets.push_back(m_BindingRenderPass->GetRenderTargetView(passCnt));
+						passCnt++;
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			
+			//RTTs 밀어넣기
+			m_Device->GetContext()->OMSetRenderTargets(BindingRenderTargets.size(), BindingRenderTargets[0].GetAddressOf(), m_BindingRenderPass->GetDepthStencilView()->GetDepthStencilView().Get());
+		}
+		else
+		{
+			Assert("GraphicsEngine BindRenderPass : Pass Binding Failed ");
+		}
+	}
 }
 
 void DXGraphicsEngine::BindPostProcessPass(std::wstring passName)
 {
-	m_BindingPass = m_ResourceManager->GetPass(passName);
-	if (m_BindingPass == nullptr)
+	m_BindingPostProcessPass = m_ResourceManager->GetPass(passName);
+
+	if (m_BindingPostProcessPass == nullptr)
 	{
 		Assert("GraphicsEngine BindPostProcessPass : Pass Binding Failed ");
 	}
 	else
 	{
-		m_BindingPass->Begin(m_Device, m_BasicPass->GetDepthStencilView());
-
-		std::vector<ComPtr<ID3D11RenderTargetView>> BindingRenderTargets;
-		UINT backbufferCnt = 0;
-		UINT passCnt = 0;
-		UINT otherpassCnt = 0;
-
-		for (auto& renderTargetInfo : m_BindingPass->GetRenderTargetInfo())
+		if (m_BindingPostProcessPass->GetPassType() == ePassType::PostProcess)
 		{
-			switch (renderTargetInfo.m_ResourceSource)
-			{
-			case SHADER_RENDER_TARGET::BACKBUFFER:
-				{
-					BindingRenderTargets.push_back(m_SwapChain->GetBackBufferRenderTarget());
-					backbufferCnt++;
-				}
-				break;
-			case SHADER_RENDER_TARGET::PASS:
-				{
-					BindingRenderTargets.push_back(m_BindingPass->GetRenderTargetView(passCnt));
-				}
-				break;
-			default:
-				break;
-			}
-		}
+			m_BindingPostProcessPass->Begin(m_Device, nullptr);
 
-		m_Device->GetContext()->OMSetRenderTargets(BindingRenderTargets.size(), BindingRenderTargets[0].GetAddressOf(), m_BasicPass->GetDepthStencilView()->GetDepthStencilView().Get());
+			std::vector<ComPtr<ID3D11RenderTargetView>> BindingRenderTargets;
+			UINT backbufferCnt = 0;
+			UINT passCnt = 0;
+			UINT otherpassCnt = 0;
+
+			for (auto& renderTargetInfo : m_BindingPostProcessPass->GetRenderTargetInfo())
+			{
+				switch (renderTargetInfo.m_ResourceSource)
+				{
+				case SHADER_RENDER_TARGET::BACKBUFFER:
+					{
+						BindingRenderTargets.push_back(m_SwapChain->GetBackBufferRenderTarget());
+						backbufferCnt++;
+					}
+					break;
+				case SHADER_RENDER_TARGET::PASS:
+					{
+						BindingRenderTargets.push_back(m_BindingPostProcessPass->GetRenderTargetView(passCnt));
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
+			m_Device->GetContext()->OMSetRenderTargets(BindingRenderTargets.size(), BindingRenderTargets[0].GetAddressOf(), nullptr);
+		}
+		else
+		{
+			Assert("GraphicsEngine BindRenderPass : Pass Binding Failed ");
+		}
 	}
 }
 
 void DXGraphicsEngine::SetPerObjectConstantBuffer(void* bufferSrc)
 {
 	auto context = m_Device->GetContext();
-	auto shaderSet = m_BindingPass->GetShaderSet(L"");
+	auto shaderSet = m_BindingPostProcessPass->GetShaderSet(L"");
 
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
 
@@ -257,16 +321,9 @@ void DXGraphicsEngine::SetTexture(GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT* r
 		case SHADER_RESOURCE_SOURCE::BACKBUFFER:
 			{
 				//bindingTextures.emplace_back(m_BasicPass->GetShaderResourceView());
-
 				break;
 			}
-
-		case SHADER_RESOURCE_SOURCE::BASICPASS:
-			{
-				bindingTextures.push_back(m_BasicPass->GetShaderResourceView((UINT)inputlayout.m_ResourceIndex));
-			}
-			break;
-		case SHADER_RESOURCE_SOURCE::OTHERPASS:
+		case SHADER_RESOURCE_SOURCE::PASS:
 			{
 				bindingTextures.push_back(m_ResourceManager->GetPass(inputlayout.m_ResourceName)->GetShaderResourceView((UINT)inputlayout.m_ResourceIndex));
 			}
@@ -282,7 +339,7 @@ void DXGraphicsEngine::SetTexture(GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT* r
 	}
 
 	//SRV
-	auto psSRV = m_BindingPass->GetShaderSet(L"").m_PixelShader->GetTextureResourceBuffer();
+	auto psSRV = m_BindingPostProcessPass->GetShaderSet(L"").m_PixelShader->GetTextureResourceBuffer();
 	int textureidx = 0;
 	for (const auto& Buffers : psSRV)
 	{
@@ -298,7 +355,7 @@ void DXGraphicsEngine::ExecutePass()
 
 	//래스터라이저 세팅
 	context->RSSetState(m_SolidRS);
-	m_BindingPass->End(m_Device);
+	m_BindingPostProcessPass->End(m_Device);
 }
 
 void DXGraphicsEngine::StartRender_Excute()
@@ -307,12 +364,15 @@ void DXGraphicsEngine::StartRender_Excute()
 	m_Device->Flush();
 	ComPtr<ID3D11DeviceContext> Context = m_Device->GetContext();
 	Context->ClearRenderTargetView(m_SwapChain->GetBackBufferRenderTarget().Get(), DirectX::Colors::NavajoWhite);
-	//Context->ClearDepthStencilView(m_DepthStencilView->GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	//basic pass의 렌더타겟도 초기화
-	m_BasicPass->Begin(m_Device, m_BasicPass->GetDepthStencilView());
-	//context->OMSetRenderTargets(1, m_SwapChain->GetBackBufferRenderTarget().GetAddressOf(), m_DepthStencilView->GetDepthStencilView().Get());
-	Context->OMSetDepthStencilState(m_BasicPass->GetDepthStencilView()->GetDepthStencilState().Get(), 0);
+	m_BindingPostProcessPass.reset();
+	m_BindingRenderPass.reset();
+
+	////basic pass의 렌더타겟도 초기화
+	//m_BasicPass->Begin(m_Device, m_BasicPass->GetDepthStencilView());
+	//Context->ClearDepthStencilView(m_DepthStencilView->GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	////context->OMSetRenderTargets(1, m_SwapChain->GetBackBufferRenderTarget().GetAddressOf(), m_DepthStencilView->GetDepthStencilView().Get());
+	//Context->OMSetDepthStencilState(m_BasicPass->GetDepthStencilView()->GetDepthStencilState().Get(), 0);
 
 }
 
@@ -323,8 +383,7 @@ void DXGraphicsEngine::Render_Execute(size_t MeshID, void* bufferSrc)
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	MeshInfo* nowMesh = m_RenderInfoManager->GetMeshInfo(MeshID);
-
-	auto shaderSet = m_BasicPass->GetShaderSet(nowMesh->m_PassName);
+	auto shaderSet = m_BindingRenderPass->GetShaderSet(nowMesh->m_PassName);
 
 	auto vs = shaderSet.m_VertexShader;
 	auto ps = shaderSet.m_PixelShader;
@@ -409,14 +468,11 @@ void DXGraphicsEngine::Render_Execute(size_t MeshID, void* bufferSrc)
 	context->IASetVertexBuffers(0, 1, vertices->GetVertexBuffer().GetAddressOf(), &stride, &offset);
 	context->IASetIndexBuffer(indices->GetIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
 
-	//RTT 밀어넣기.
-	//context->OMSetRenderTargets(m_RenderTargetTexture.size(), m_BindingRenderTargetTexture[0].GetAddressOf(), m_DepthStencilView->GetDepthStencilView().Get());
-
 	//쉐이더 설정
 	context->VSSetShader(vs->GetVertexShader().Get(), nullptr, 0);
 	context->PSSetShader(ps->GetPixelShader().Get(), nullptr, 0);
-
 	context->IASetInputLayout(vs->GetInputLayout().Get());
+
 
 	//래스터라이저 세팅
 	context->RSSetState(m_SolidRS);
@@ -429,20 +485,16 @@ void DXGraphicsEngine::Present_Execute()
 {
 	auto context = m_Device->GetContext();
 
-	m_BasicPass->End(m_Device);
-
-	context->OMSetDepthStencilState(m_BasicPass->GetDepthStencilView()->GetDisableDepthStencilState().Get(), 0);
-	context->OMSetRenderTargets(1, m_SwapChain->GetBackBufferRenderTarget().GetAddressOf(), m_BasicPass->GetDepthStencilView()->GetDepthStencilView().Get());
-
-
 	//MRT DBG
 	const DirectX::XMFLOAT2 BoxSize{ 260, 170 };
 	m_SpriteBatch->Begin();
 
+	auto BasicPass = m_ResourceManager->GetPass(L"Basic");
+
 	for (int i = 0; i < 4; i++)
 	{
 		RECT pos{ i * (int)BoxSize.x, m_ScreenInfo.m_ScreenHeight - (int)BoxSize.y,  (i + 1) * (int)BoxSize.x, m_ScreenInfo.m_ScreenHeight };
-		m_SpriteBatch->Draw(m_BasicPass->GetShaderResourceView(i).Get(), pos);
+		m_SpriteBatch->Draw(BasicPass->GetShaderResourceView(i).Get(), pos);
 	};
 
 	m_SpriteBatch->End();
@@ -452,7 +504,6 @@ void DXGraphicsEngine::Present_Execute()
 
 void DXGraphicsEngine::Finalize()
 {
-	m_BasicPass->Finalize();
 	m_SwapChain->Finalize();
 	//TODO 클래스와 시킬것.
 	m_SolidRS->Release();
@@ -573,12 +624,4 @@ void DXGraphicsEngine::CreateRenderState()
 	wireDesc.SlopeScaledDepthBias = 0.0f;
 
 	m_Device->GetDevice()->CreateRasterizerState(&wireDesc, &m_WireRS);
-}
-
-
-void DXGraphicsEngine::CreateBasicPass(const GRAPHICSENGINE_PASS_DESC* shaderPassDesc)
-{
-	m_BasicPass = std::make_shared<RenderPass>();
-
-	m_BasicPass->Initialize(m_ScreenInfo, *shaderPassDesc, m_Device);
 }

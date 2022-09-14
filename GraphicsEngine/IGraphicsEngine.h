@@ -31,6 +31,8 @@ public:
 	virtual void Present() abstract;
 	//렌더 및 ConstantBuffer 설정
 	virtual void RenderObject(size_t MeshID, void* ConstantBuffer) abstract;
+	virtual void RenderObjects(size_t* MeshID, void* ConstantBuffer, UINT ConstantBufSize, UINT objectCnt) abstract;
+
 	//데이터 저장 및 갈아끼우기
 	virtual void AddObject(size_t MeshID, MeshInfo meshInfo) abstract;
 	//게임엔진에서도 삭제되었을떄 delete를 호출해서 삭제해주자.

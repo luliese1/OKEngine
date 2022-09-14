@@ -20,7 +20,7 @@ private:
 	//ComPtr<ID3D11ShaderResourceView> m_DepthStencilSRV;
 	ComPtr<ID3D11Texture2D> m_DepthStencilBuffer;
 
-	ComPtr<ID3D11DepthStencilState> m_DepthStencilState;
-	ComPtr<ID3D11DepthStencilState> m_DepthDisableStencilState;
+	static ComPtr<ID3D11DepthStencilState> m_DepthStencilState;
+	static ComPtr<ID3D11DepthStencilState> m_DepthDisableStencilState;
 };
 

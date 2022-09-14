@@ -13,7 +13,7 @@
 #include "RenderTargetView.h"
 
 
-PostProcessRenderPass::PostProcessRenderPass(): PassBase(ePassType::PostProcess)
+PostProcessRenderPass::PostProcessRenderPass() : PassBase(ePassType::PostProcess)
 {
 }
 
@@ -53,24 +53,24 @@ void PostProcessRenderPass::Initialize(ScreenInfo& sinfo, const GRAPHICSENGINE_P
 		switch (passDesc.m_RenderTargetLayout[cnt].m_ResourceSource)
 		{
 		case SHADER_RENDER_TARGET::BACKBUFFER:
-		{
-			m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
-		}
-		break;
+			{
+				m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
+			}
+			break;
 		case SHADER_RENDER_TARGET::OTHERPASS:
-		{
-			m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
-		}
+			{
+				m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
+			}
 			break;
 		case SHADER_RENDER_TARGET::PASS:
-		{
-			std::shared_ptr<RenderTargetView> tempRTT = std::make_shared<RenderTargetView>();
-			tempRTT->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, sinfo, device);
-			m_RenderTargetTexture.emplace_back(tempRTT);
+			{
+				std::shared_ptr<RenderTargetView> tempRTT = std::make_shared<RenderTargetView>();
+				tempRTT->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, sinfo, device);
+				m_RenderTargetTexture.emplace_back(tempRTT);
 
-			m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
-		}
-		break;
+				m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
+			}
+			break;
 		default:
 			Assert("PostProcessingRenderPass : Initialize ShaderResourceSource Error ");
 			break;
