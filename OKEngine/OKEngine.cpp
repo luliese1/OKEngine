@@ -80,7 +80,7 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	};
 
 	ShadowPass.m_RenderTargetLayout = shadowShaderOutput;
-	ShadowPass.m_OutputTexturesCount = 0;
+	ShadowPass.m_OutputTexturesCount = 1;
 
 	m_GraphicsEngine->CreateRenderPass(ShadowPass);
 

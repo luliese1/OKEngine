@@ -27,12 +27,12 @@ void DepthStencilView::Initialize(std::shared_ptr<Device> device, ScreenInfo& SI
 		// Stencil operations if pixel is front-facing. 
 		depthstencilStateDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 		depthstencilStateDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthstencilStateDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+		depthstencilStateDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 		depthstencilStateDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 		// Stencil operations if pixel is back-facing. 
 		depthstencilStateDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
 		depthstencilStateDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		depthstencilStateDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+		depthstencilStateDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
 		depthstencilStateDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 		HR(device->GetDevice()->CreateDepthStencilState(&depthstencilStateDesc, &m_DepthStencilState));

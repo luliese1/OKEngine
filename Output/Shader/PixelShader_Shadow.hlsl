@@ -6,7 +6,7 @@
 //// PerFrame
 cbuffer cbPerFrame : register(b0)
 {
-    Camera g_Camera : packoffset(c0);
+    Camera g_Camera : packoffset(c0); 
     
     uint DirectionalLightCnt : packoffset(c0.x);
     uint PointLightCnt : packoffset(c0.y);
@@ -48,10 +48,12 @@ struct PS_INPUT
 //--------------------------------------------------------------------------------------
 // Pixel Shader
 //--------------------------------------------------------------------------------------
-void PSMain(PS_INPUT Input) : SV_TARGET
+float4 PSMain(PS_INPUT Input) : SV_TARGET
 {
-    float4 diffuse = g_DiffuseTexture.Sample(g_samLinear, Input.Texcoord0);
+    //float4 diffuse = g_DiffuseTexture.Sample(g_samLinear, Input.Texcoord0);
+    //
+    ////알파값에 따라 그림자를 클리핑할 것인지.. 
+    //clip(diffuse.a - 0.15f);
     
-    //알파값에 따라 그림자를 클리핑할 것인지.. 
-    clip(diffuse.a - 0.15f);
+    return Input.PosH;
 }

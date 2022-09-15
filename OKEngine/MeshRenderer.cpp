@@ -20,19 +20,10 @@ MeshRenderer::LightInfo MeshRenderer::m_LightInfo;
 
 void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo, std::shared_ptr<IGraphicsEngine> Graphics)
 {
-	CameraInfo cameraInfo;
-
-	cameraInfo.m_ProjMatrix = camera->GetProjectionMatrix();
-	cameraInfo.m_ViewMatrix = camera->GetViewMatrix();
-	cameraInfo.m_ViewProjectionMatrix = cameraInfo.m_ViewMatrix * cameraInfo.m_ProjMatrix;
-	cameraInfo.m_ViewProjectionMatrixInverseTranspose = cameraInfo.m_ViewProjectionMatrix.Invert();
-
-	Graphics->StartRender();
-	Graphics->SetPerFrameConstantBuffer(&cameraInfo);
-
 	std::vector<ObjectGUID> staticMeshGUIDs;
 	std::vector<StaticMesh> staticMeshInfo;
 	staticMeshInfo.reserve(m_MeshQueue.size());
+	LoadLightInfos();
 
 	//컬링
 	//오브젝트 출력할것들 선별
@@ -64,13 +55,39 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 		//meshInfos.emplace_back(tempMeshInfo);
 	}
 
-	//Graphics->BindRenderPass(L"Shadow");
-	//Graphics->RenderObjects(staticMeshGUIDs.data(), staticMeshInfo.data(), sizeof(StaticMesh), staticMeshGUIDs.size());
+	//렌더링
+	Graphics->StartRender();
+
+	if (m_LightInfo.DirectionalLightCnt > 0)
+	{
+		CameraInfo shadowInfo;
+		Matrix LightMat = DirectX::XMMatrixRotationRollPitchYaw(1.57f, 0.f, 0.f);
+		LightMat.Translation({0.f, 20.f, 5.f});
+
+		shadowInfo.m_ProjMatrix = camera->GetProjectionMatrix();
+		shadowInfo.m_ViewMatrix = camera->GetViewMatrix();
+		shadowInfo.m_ViewProjectionMatrix = shadowInfo.m_ViewMatrix * shadowInfo.m_ProjMatrix;
+		shadowInfo.m_ViewProjectionMatrixInverseTranspose = shadowInfo.m_ViewProjectionMatrix.Invert();
+
+		Graphics->SetPerFrameConstantBuffer(&shadowInfo);
+
+		Graphics->BindRenderPass(L"Shadow");
+		Graphics->RenderObjects(staticMeshGUIDs.data(), staticMeshInfo.data(), sizeof(StaticMesh), staticMeshGUIDs.size());
+	}
+
+	CameraInfo cameraInfo;
+
+	cameraInfo.m_ProjMatrix = camera->GetProjectionMatrix();
+	cameraInfo.m_ViewMatrix = camera->GetViewMatrix();
+	cameraInfo.m_ViewProjectionMatrix = cameraInfo.m_ViewMatrix * cameraInfo.m_ProjMatrix;
+	cameraInfo.m_ViewProjectionMatrixInverseTranspose = cameraInfo.m_ViewProjectionMatrix.Invert();
+
+	Graphics->SetPerFrameConstantBuffer(&cameraInfo);
+
 
 	Graphics->BindRenderPass(L"Basic");
 	Graphics->RenderObjects(staticMeshGUIDs.data(), staticMeshInfo.data(), sizeof(StaticMesh), staticMeshGUIDs.size());
 
-	LoadLightInfos();
 	Graphics->BindPostProcessPass(L"light");
 	GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT lightInput[] =
 	{
@@ -127,55 +144,55 @@ void MeshRenderer::LoadLightInfos()
 		switch (lightInfo->GetLightType())
 		{
 		case LightBase::LightType::Directional:
-		{
-			std::shared_ptr<DirectionalLight> direction = std::dynamic_pointer_cast<DirectionalLight>(lightInfo);
-			if (m_LightInfo.DirectionalLightCnt > 3)
 			{
-				assert("directional light는 최대 3개까지 가능합니다.");
+				std::shared_ptr<DirectionalLight> direction = std::dynamic_pointer_cast<DirectionalLight>(lightInfo);
+				if (m_LightInfo.DirectionalLightCnt > 3)
+				{
+					assert("directional light는 최대 3개까지 가능합니다.");
+				}
+				else
+				{
+					m_LightInfo.DirectInfos[m_LightInfo.DirectionalLightCnt] = direction->GetDirectionalLightInfo();
+					m_LightInfo.DirectionalLightCnt++;
+				}
 			}
-			else
-			{
-				m_LightInfo.DirectInfos[m_LightInfo.DirectionalLightCnt] = direction->GetDirectionalLightInfo();
-				m_LightInfo.DirectionalLightCnt++;
-			}
-		}
 			break;
 		case LightBase::LightType::Spot:
-		{
-			std::shared_ptr<SpotLIght> spot = std::dynamic_pointer_cast<SpotLIght>(lightInfo);
-			if (m_LightInfo.SpotLightCnt > 10)
 			{
-				assert("spot light는 최대 10개까지 가능합니다.");
+				std::shared_ptr<SpotLIght> spot = std::dynamic_pointer_cast<SpotLIght>(lightInfo);
+				if (m_LightInfo.SpotLightCnt > 10)
+				{
+					assert("spot light는 최대 10개까지 가능합니다.");
+				}
+				else
+				{
+					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt] = spot->GetSpotLightInfo();
+					auto info = spot->GetComponent<Transform>()->GetWorldTM();
+					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.x = info.r[3].m128_f32[0];
+					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.y = info.r[3].m128_f32[1];
+					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.z = info.r[3].m128_f32[2];
+					m_LightInfo.SpotLightCnt++;
+				}
 			}
-			else
-			{
-				m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt] = spot->GetSpotLightInfo();
-				auto info = spot->GetComponent<Transform>()->GetWorldTM();
-				m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.x = info.r[3].m128_f32[0];
-				m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.y = info.r[3].m128_f32[1];
-				m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.z = info.r[3].m128_f32[2];
-				m_LightInfo.SpotLightCnt++;
-			}
-		}
 			break;
 		case LightBase::LightType::Point:
-		{
-			std::shared_ptr<PointLight> point = std::dynamic_pointer_cast<PointLight>(lightInfo);
-			if (m_LightInfo.PointLightCnt > 10)
 			{
-				assert("point light는 최대 10개까지 가능합니다.");
+				std::shared_ptr<PointLight> point = std::dynamic_pointer_cast<PointLight>(lightInfo);
+				if (m_LightInfo.PointLightCnt > 10)
+				{
+					assert("point light는 최대 10개까지 가능합니다.");
+				}
+				else
+				{
+					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt] = point->GetPointLIghtInfo();
+					auto info = point->GetComponent<Transform>()->GetWorldTM();
+					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.x = info.r[3].m128_f32[0];
+					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.y = info.r[3].m128_f32[1];
+					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.z = info.r[3].m128_f32[2];
+					m_LightInfo.PointLightCnt++;
+				}
 			}
-			else
-			{
-				m_LightInfo.PointInfos[m_LightInfo.PointLightCnt] = point->GetPointLIghtInfo();
-				auto info = point->GetComponent<Transform>()->GetWorldTM();
-				m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.x = info.r[3].m128_f32[0];
-				m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.y = info.r[3].m128_f32[1];
-				m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.z = info.r[3].m128_f32[2];
-				m_LightInfo.PointLightCnt++;
-			}
-		}
-		break;
+			break;
 		default:
 			break;
 		}

@@ -86,7 +86,6 @@ void Camera::CalcViewMatrix()
 
 	m_ViewMatrix = DirectX::XMMatrixTranspose(m_ViewMatrix);
 
-
 	CalcViewFrustumPlain();
 
 	return;
@@ -185,4 +184,9 @@ void Camera::SetLookAt(Vector3 pos)
 DirectX::XMMATRIX& Camera::GetProjectionMatrix()
 {
 	return m_Projection;
+}
+
+DirectX::XMMATRIX Camera::GetOthogonalProjectionMatrix()
+{
+	return DirectX::XMMatrixOrthographicLH(m_ScreenWidth, m_ScreenHeight, m_Near, m_Far);
 }

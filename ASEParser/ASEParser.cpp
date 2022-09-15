@@ -362,21 +362,50 @@ void ASEParser::Finalize()
 	m_Animations.clear();
 }
 
-std::vector<ASEData::BaseObjectInfo*>& ASEParser::GetObject(size_t meshid)
+
+bool ASEParser::GetObject(size_t meshid, std::vector<ASEData::BaseObjectInfo*>*& data)
 {
 	auto info = m_ObjectInfos.find(meshid);
 
-	return info->second;
+	if (info == m_ObjectInfos.end())
+	{
+		return false;
+	}
+	else
+	{
+		data = &info->second;
+		return true;
+	}
 }
 
-std::vector<ASEData::ASEMaterial*>& ASEParser::GetMaterial(size_t meshid)
+bool ASEParser::GetMaterial(size_t meshid, std::vector<ASEData::ASEMaterial*>*& data)
 {
-	return m_Materials.find(meshid)->second;
+	auto info = m_Materials.find(meshid);
+
+	if (info == m_Materials.end())
+	{
+		return false;
+	}
+	else
+	{
+		data = &info->second;
+		return true;
+	}
 }
 
-std::vector<ASEData::Animation*>& ASEParser::GetAnimation(size_t meshid)
+bool ASEParser::GetAnimation(size_t meshid, std::vector<ASEData::Animation*>*& data)
 {
-	return m_Animations.find(meshid)->second;
+	auto info = m_Animations.find(meshid);
+
+	if (info == m_Animations.end())
+	{
+		return false;
+	}
+	else
+	{
+		data = &info->second;
+		return true;
+	}
 }
 
 void ASEParser::ParseASE()

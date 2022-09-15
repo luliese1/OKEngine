@@ -58,7 +58,7 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
 #ifdef USING_ALBEDO
     psOut.Color = g_DiffuseTexture.Sample(g_samLinear, Input.Texcoord0);
 #else
-    psOut.Color = float4(0.f, 0.f, 0.f, 1.f);
+    psOut.Color = float4(0.5f, 0.5f, 0.5f, 1.f);
 #endif
 
 #ifdef USING_NORMALMAP

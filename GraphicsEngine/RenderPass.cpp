@@ -93,7 +93,7 @@ void RenderPass::Begin(std::shared_ptr<Device> device, std::shared_ptr<DepthSten
 
 	for (auto iter : m_BindingRenderTargetTexture)
 	{
-		context->ClearRenderTargetView(iter.Get(), DirectX::Colors::White);
+		context->ClearRenderTargetView(iter.Get(), DirectX::Colors::Transparent);
 	}
 	context->ClearDepthStencilView(m_DepthStencilView->GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	context->OMSetDepthStencilState(m_DepthStencilView->GetDepthStencilState().Get(), 0);

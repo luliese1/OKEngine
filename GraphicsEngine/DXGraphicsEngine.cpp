@@ -175,7 +175,7 @@ void DXGraphicsEngine::BindRenderPass(std::wstring passName)
 			UINT backbufferCnt = 0;
 			UINT passCnt = 0;
 			UINT otherpassCnt = 0;
-			
+
 			for (auto& renderTargetInfo : m_BindingRenderPass->GetRenderTargetInfo())
 			{
 				switch (renderTargetInfo.m_ResourceSource)
@@ -196,9 +196,17 @@ void DXGraphicsEngine::BindRenderPass(std::wstring passName)
 					break;
 				}
 			}
-			
-			//RTTs 밀어넣기
-			m_Device->GetContext()->OMSetRenderTargets(BindingRenderTargets.size(), BindingRenderTargets[0].GetAddressOf(), m_BindingRenderPass->GetDepthStencilView()->GetDepthStencilView().Get());
+
+			if (BindingRenderTargets.size() > 0)
+			{
+				//RTTs 밀어넣기
+				m_Device->GetContext()->OMSetRenderTargets(BindingRenderTargets.size(), BindingRenderTargets[0].GetAddressOf(), m_BindingRenderPass->GetDepthStencilView()->GetDepthStencilView().Get());
+			}
+			else
+			{
+				m_Device->GetContext()->OMSetRenderTargets(0, nullptr, m_BindingRenderPass->GetDepthStencilView()->GetDepthStencilView().Get());
+			}
+
 		}
 		else
 		{
@@ -438,10 +446,13 @@ void DXGraphicsEngine::Render_Execute(size_t MeshID, void* bufferSrc)
 		//SRV
 		auto psSRVBuff = ps->GetTextureResourceBuffer();
 		int textureidx = 0;
-		for (const auto& Buffers : psSRVBuff)
+		if (nowMesh->m_TextureCnt > 0)
 		{
-			context->PSSetShaderResources(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetTexture(nowMesh->m_TextureID[textureidx])->GetTextureSRV().GetAddressOf());
-			textureidx++;
+			for (const auto& Buffers : psSRVBuff)
+			{
+				context->PSSetShaderResources(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetTexture(nowMesh->m_TextureID[textureidx])->GetTextureSRV().GetAddressOf());
+				textureidx++;
+			}
 		}
 
 		//Sampler

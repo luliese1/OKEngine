@@ -72,107 +72,119 @@ ObjectGUID ModelLoader::LoadFBXFile(const std::wstring& path, ObjectGUID id)
 
 bool ModelLoader::SendToASEInfosToGraphics(ObjectGUID id, ModelManageInfo& modelManageInfo, std::shared_ptr<IGraphicsEngine> graphics)
 {
-	auto& infos = m_ASEParser->GetObject(id);
+	std::vector<ASEData::BaseObjectInfo*>* objectData = nullptr;
 
-	//지금은 ASE에서 바로 가져오고있으나,
-	//나중엔 파싱한 데이터 (ModelLoaderInfo)에서 보관하여, 그 데이터를 통하여 데이터를 전송해야한다.
-	for (int subMeshIndex = 0; subMeshIndex < infos.size(); subMeshIndex++)
+	if (m_ASEParser->GetObject(id, objectData))
 	{
-		if (infos[subMeshIndex]->m_type == ObjectType_Geomobject)
+		auto infos = *objectData;
+
+		//지금은 ASE에서 바로 가져오고있으나,
+		//나중엔 파싱한 데이터 (ModelLoaderInfo)에서 보관하여, 그 데이터를 통하여 데이터를 전송해야한다.
+		for (int subMeshIndex = 0; subMeshIndex < infos.size(); subMeshIndex++)
 		{
-			ASEData::GeomObject* castedInfo = static_cast<ASEData::GeomObject*>(infos[subMeshIndex]);
-
-			graphics->CreateVertexBuffer((void*)&castedInfo->m_opt_vertex[0], sizeof(StaticMeshVertex), castedInfo->m_opt_vertex.size(), id, subMeshIndex);
-			graphics->CreateIndexBuffer((void*)&castedInfo->m_opt_index[0], castedInfo->m_opt_index.size() * 3, id, subMeshIndex);
-
-			if (modelManageInfo.m_ModelInfo[subMeshIndex].m_MateriaRef != -1)
+			if (infos[subMeshIndex]->m_type == ObjectType_Geomobject)
 			{
-				auto find = m_ModelMaterialInfo.find(modelManageInfo.m_ModelInfo[subMeshIndex].m_MateriaGUID);
-				if (find == m_ModelMaterialInfo.end())
-				{
-					assert(" SendToASEInfoToGraphics :: ASE 파싱과정에서 메테리얼을 발견하지 못했습니다.");
-					break;
-				}
+				ASEData::GeomObject* castedInfo = static_cast<ASEData::GeomObject*>(infos[subMeshIndex]);
 
-				auto& material = find->second;
-				if (material.m_LoadState == false)
+				graphics->CreateVertexBuffer((void*)&castedInfo->m_opt_vertex[0], sizeof(StaticMeshVertex), castedInfo->m_opt_vertex.size(), id, subMeshIndex);
+				graphics->CreateIndexBuffer((void*)&castedInfo->m_opt_index[0], castedInfo->m_opt_index.size() * 3, id, subMeshIndex);
+
+				if (modelManageInfo.m_ModelInfo[subMeshIndex].m_MateriaRef != -1)
 				{
-					material.m_LoadState = true;
-					for (int textureidx = 0; textureidx < material.m_TextureCnt; textureidx++)
+					auto find = m_ModelMaterialInfo.find(modelManageInfo.m_ModelInfo[subMeshIndex].m_MateriaGUID);
+					if (find == m_ModelMaterialInfo.end())
 					{
-						graphics->CreateTexture(material.m_TeturePath[textureidx], material.m_Texture[textureidx]);
+						assert(" SendToASEInfoToGraphics :: ASE 파싱과정에서 메테리얼을 발견하지 못했습니다.");
+						break;
+					}
+
+					auto& material = find->second;
+					if (material.m_LoadState == false)
+					{
+						material.m_LoadState = true;
+						for (int textureidx = 0; textureidx < material.m_TextureCnt; textureidx++)
+						{
+							graphics->CreateTexture(material.m_TeturePath[textureidx], material.m_Texture[textureidx]);
+						}
 					}
 				}
 			}
 		}
+
+		return true;
 	}
 
-	return true;
+	return false;
 }
 bool ModelLoader::LoadModelNodesInfoFromASE(ObjectGUID id, ModelManageInfo& modelManageInfo)
 {
-	auto& InfoList = m_ASEParser->GetObject(id);
+	std::vector<ASEData::BaseObjectInfo*>* objectData = nullptr;
 
-	modelManageInfo.m_ModelCount = InfoList.size();
-
-	bool IsThereSameObj = false;
-	modelManageInfo.m_ModelInfo.resize(modelManageInfo.m_ModelCount);
-
-	int subMeshCnt = 0;
-
-	//정보들을 순회하면서 노드들의 정보를 기록한다
-	for (UINT nodeIdx = 0; nodeIdx < modelManageInfo.m_ModelCount; nodeIdx++)
+	if (m_ASEParser->GetObject(id, objectData))
 	{
-		auto& nowModelInfo = modelManageInfo.m_ModelInfo[nodeIdx];
+		auto InfoList = *objectData;
 
-		//부모 자식관계를 정리한다.
-		IsThereSameObj = false;
-		if (InfoList[nodeIdx]->m_nodeparent == "")
+		modelManageInfo.m_ModelCount = InfoList.size();
+
+		bool IsThereSameObj = false;
+		modelManageInfo.m_ModelInfo.resize(modelManageInfo.m_ModelCount);
+
+		int subMeshCnt = 0;
+
+		//정보들을 순회하면서 노드들의 정보를 기록한다
+		for (UINT nodeIdx = 0; nodeIdx < modelManageInfo.m_ModelCount; nodeIdx++)
 		{
-			nowModelInfo.m_parent = -1;
-		}
-		for (UINT parentIdx = 0; parentIdx < modelManageInfo.m_ModelCount; parentIdx)
-		{
-			if (InfoList[nodeIdx]->m_nodeparent == InfoList[parentIdx]->m_nodename)
+			auto& nowModelInfo = modelManageInfo.m_ModelInfo[nodeIdx];
+
+			//부모 자식관계를 정리한다.
+			IsThereSameObj = false;
+			if (InfoList[nodeIdx]->m_nodeparent == "")
 			{
-				nowModelInfo.m_parent = parentIdx;
-				IsThereSameObj = true;
-				break;
+				nowModelInfo.m_parent = -1;
 			}
-			parentIdx++;
-		}
-		if (!IsThereSameObj)
-		{
-			nowModelInfo.m_parent = -1;
-		}
-
-		//노드가 메쉬를 갖고있는지 판단한다.
-		if (InfoList[nodeIdx]->m_type == ObjectType_Geomobject)
-		{
-			ASEData::GeomObject* castedInfo = static_cast<ASEData::GeomObject*>(InfoList[nodeIdx]);
-
-			nowModelInfo.m_nodeTM = InfoList[nodeIdx]->m_NodeTm;
-			nowModelInfo.m_MateriaRef = castedInfo->m_material_ref;
-			nowModelInfo.m_SubMeshInfo = subMeshCnt;
-			subMeshCnt++;
-
-			if (castedInfo->m_IsSkinningMesh)
+			for (UINT parentIdx = 0; parentIdx < modelManageInfo.m_ModelCount; parentIdx)
 			{
-				nowModelInfo.m_ModelType = ModelInfo::ModelMeshType::SKINNING;
-				//본을 신경써야함
+				if (InfoList[nodeIdx]->m_nodeparent == InfoList[parentIdx]->m_nodename)
+				{
+					nowModelInfo.m_parent = parentIdx;
+					IsThereSameObj = true;
+					break;
+				}
+				parentIdx++;
+			}
+			if (!IsThereSameObj)
+			{
+				nowModelInfo.m_parent = -1;
+			}
+
+			//노드가 메쉬를 갖고있는지 판단한다.
+			if (InfoList[nodeIdx]->m_type == ObjectType_Geomobject)
+			{
+				ASEData::GeomObject* castedInfo = static_cast<ASEData::GeomObject*>(InfoList[nodeIdx]);
+
+				nowModelInfo.m_nodeTM = InfoList[nodeIdx]->m_NodeTm;
+				nowModelInfo.m_MateriaRef = castedInfo->m_material_ref;
+				nowModelInfo.m_SubMeshInfo = subMeshCnt;
+				subMeshCnt++;
+
+				if (castedInfo->m_IsSkinningMesh)
+				{
+					nowModelInfo.m_ModelType = ModelInfo::ModelMeshType::SKINNING;
+					//본을 신경써야함
+				}
+				else
+				{
+					nowModelInfo.m_ModelType = ModelInfo::ModelMeshType::STATIC;
+				}
+			}
+			else if (InfoList[nodeIdx]->m_type == ObjectType_HelperObject)
+			{
+				nowModelInfo.m_ModelType = ModelInfo::ModelMeshType::NONMESH;
 			}
 			else
 			{
-				nowModelInfo.m_ModelType = ModelInfo::ModelMeshType::STATIC;
+				assert("error! 정의되지 않은 ase object 타입입니다");
 			}
-		}
-		else if (InfoList[nodeIdx]->m_type == ObjectType_HelperObject)
-		{
-			nowModelInfo.m_ModelType = ModelInfo::ModelMeshType::NONMESH;
-		}
-		else
-		{
-			assert("error! 정의되지 않은 ase object 타입입니다");
 		}
 	}
 
@@ -180,75 +192,83 @@ bool ModelLoader::LoadModelNodesInfoFromASE(ObjectGUID id, ModelManageInfo& mode
 }
 bool ModelLoader::LoadMaterialInfoFromASE(ObjectGUID id, ModelManageInfo& modelManageInfo)
 {
-	for (auto& pMat : m_ASEParser->GetMaterial(id))
+	std::vector<ASEData::ASEMaterial*>* materialData = nullptr;
+
+	if (m_ASEParser->GetMaterial(id, materialData))
 	{
-		ModelMaterialInfo tempMat;
-
-		tempMat.m_Ambient = Vector4(pMat->m_material_ambient);
-		tempMat.m_Ambient.w = 1.f;
-		tempMat.m_Diffuse = Vector4(pMat->m_material_diffuse);
-		tempMat.m_Diffuse.w = 1.f;
-		tempMat.m_Specular = Vector4(pMat->m_material_specular);
-		tempMat.m_Specular.w = 1.f;
-		//reflect
-		tempMat.m_Reflect = { 0.0f,0.0f,0.0f,1.f };
-
-
-		tempMat.m_name = modelManageInfo.m_name + s2ws(pMat->m_material_name);
-		tempMat.m_GUID = ResourceHashTable::GetHashKey(tempMat.m_name);
-		tempMat.m_TextureCnt = 0;
-
-		if (pMat->m_map_diffuse != nullptr)
+		for (auto& pMat : *materialData)
 		{
-			std::wstring diffusePath = s2ws(pMat->m_map_diffuse->m_bitmap);
-			std::string::size_type pos = std::wstring(diffusePath).find_last_of(L"/");
+			ModelMaterialInfo tempMat;
 
-			std::wstring diffuseName;
-			if (pos == -1)
-				diffuseName = diffusePath;
-			else
-				diffuseName = diffusePath.substr(pos + 1, diffusePath.size());
+			tempMat.m_Ambient = Vector4(pMat->m_material_ambient);
+			tempMat.m_Ambient.w = 1.f;
+			tempMat.m_Diffuse = Vector4(pMat->m_material_diffuse);
+			tempMat.m_Diffuse.w = 1.f;
+			tempMat.m_Specular = Vector4(pMat->m_material_specular);
+			tempMat.m_Specular.w = 1.f;
+			//reflect
+			tempMat.m_Reflect = { 0.0f,0.0f,0.0f,1.f };
 
-			tempMat.m_UsingAlbedo = true;
 
-			tempMat.m_Texture[0] = ResourceHashTable::GetHashKey(diffusePath);
-			tempMat.m_TeturePath[0] = std::move(diffusePath);
-			tempMat.m_TextureCnt++;
-		}
+			tempMat.m_name = modelManageInfo.m_name + s2ws(pMat->m_material_name);
+			tempMat.m_GUID = ResourceHashTable::GetHashKey(tempMat.m_name);
+			tempMat.m_TextureCnt = 0;
 
-		if (pMat->m_map_bump != nullptr)
-		{
-			std::wstring bumpPath = s2ws(pMat->m_map_bump->m_bitmap);
-			std::string::size_type pos = std::wstring(bumpPath).find_last_of(L"/");
-
-			std::wstring bumpName;
-			if (pos == -1)
-				bumpName = bumpPath;
-			else
-				bumpName = bumpPath.substr(pos + 1, bumpPath.size());
-
-			tempMat.m_UsingAlbedo = false;
-
-			tempMat.m_Texture[1] = ResourceHashTable::GetHashKey(bumpPath);
-			tempMat.m_TeturePath[1] = std::move(bumpPath);
-			tempMat.m_TextureCnt++;
-		}
-
-		//노드들의 머테리얼에 따라서 머테리얼 GUID 삽입
-		//상당히 더러운 코드이다..
-		for (auto& nodes : modelManageInfo.m_ModelInfo)
-		{
-			if (nodes.m_MateriaRef == pMat->m_materialnumber)
+			if (pMat->m_map_diffuse != nullptr)
 			{
-				nodes.m_MateriaGUID = tempMat.m_GUID;
+				std::wstring diffusePath = s2ws(pMat->m_map_diffuse->m_bitmap);
+				std::string::size_type pos = std::wstring(diffusePath).find_last_of(L"/");
+
+				std::wstring diffuseName;
+				if (pos == -1)
+					diffuseName = diffusePath;
+				else
+					diffuseName = diffusePath.substr(pos + 1, diffusePath.size());
+
+				tempMat.m_UsingAlbedo = true;
+
+				tempMat.m_Texture[0] = ResourceHashTable::GetHashKey(diffusePath);
+				tempMat.m_TeturePath[0] = std::move(diffusePath);
+				tempMat.m_TextureCnt++;
 			}
+
+			if (pMat->m_map_bump != nullptr)
+			{
+				std::wstring bumpPath = s2ws(pMat->m_map_bump->m_bitmap);
+				std::string::size_type pos = std::wstring(bumpPath).find_last_of(L"/");
+
+				std::wstring bumpName;
+				if (pos == -1)
+					bumpName = bumpPath;
+				else
+					bumpName = bumpPath.substr(pos + 1, bumpPath.size());
+
+				tempMat.m_UsingAlbedo = false;
+
+				tempMat.m_Texture[1] = ResourceHashTable::GetHashKey(bumpPath);
+				tempMat.m_TeturePath[1] = std::move(bumpPath);
+				tempMat.m_TextureCnt++;
+			}
+
+			//노드들의 머테리얼에 따라서 머테리얼 GUID 삽입
+			//상당히 더러운 코드이다..
+			for (auto& nodes : modelManageInfo.m_ModelInfo)
+			{
+				if (nodes.m_MateriaRef == pMat->m_materialnumber)
+				{
+					nodes.m_MateriaGUID = tempMat.m_GUID;
+				}
+			}
+
+			m_ModelMaterialInfo.emplace(tempMat.m_GUID, tempMat);
 		}
 
-		m_ModelMaterialInfo.emplace(tempMat.m_GUID, tempMat);
+		return true;
 	}
 
-	return true;
+	return false;
 }
+
 bool ModelLoader::LoadBonesInfoFromASE(ObjectGUID id, ModelManageInfo& modelManageInfo)
 {
 	return true;
@@ -343,9 +363,14 @@ void ModelLoader::AttachMeshs(ObjectGUID meshid, shared_ptr<GameObject> targetOb
 				tempMeshInfo.m_MeshId = meshid;
 				tempMeshInfo.m_subMeshId = submeshId;
 
+				//NoneMaterial, NoneTex, Tex, TexNormal, Normal
+
 				auto find = m_ModelMaterialInfo.find(nowModelInfo.m_MateriaGUID);
 				if (find == m_ModelMaterialInfo.end())
+				{
+					tempMeshInfo.m_PassName = L"NoneTexStatic";
 					tempMeshInfo.m_TextureCnt = 0;
+				}
 				else
 				{
 					tempMeshInfo.m_TextureCnt = find->second.m_TextureCnt;
@@ -362,6 +387,8 @@ void ModelLoader::AttachMeshs(ObjectGUID meshid, shared_ptr<GameObject> targetOb
 					{
 						tempMeshInfo.m_PassName = L"TexStatic";
 					}
+
+
 				}
 
 				//임시설정

@@ -28,6 +28,8 @@ public:
 	void SetLookAt(Vector3 pos);
 
 	DirectX::XMMATRIX& GetProjectionMatrix();
+	DirectX::XMMATRIX GetOthogonalProjectionMatrix();
+
 	DirectX::XMMATRIX& GetViewMatrix();
 
 	int GetCameraID() const { return m_CameraID; }

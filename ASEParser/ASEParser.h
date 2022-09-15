@@ -66,9 +66,9 @@ public:
 	/// </summary>
 	/// 
 
-	std::vector<ASEData::BaseObjectInfo*>& GetObject(size_t meshid);
-	std::vector<ASEData::ASEMaterial*>& GetMaterial(size_t meshid);
-	std::vector<ASEData::Animation*>& GetAnimation(size_t meshid);
+	bool GetObject(size_t meshid, std::vector<ASEData::BaseObjectInfo*>*& data);
+	bool GetMaterial(size_t meshid, std::vector<ASEData::ASEMaterial*>*& data);
+	bool GetAnimation(size_t meshid, std::vector<ASEData::Animation*>*& data);
 
 private:
 	ObjectType m_ParsingMode;
