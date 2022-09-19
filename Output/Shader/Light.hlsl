@@ -28,6 +28,8 @@ cbuffer cbPerObject : register(b1)
 Texture2D g_Color : register(t0);
 Texture2D g_Normal : register(t1);
 Texture2D g_PosW : register(t2);
+Texture2D g_ShadowMap : register(t3);
+
 
 SamplerState g_samLinear : register(s0);
 

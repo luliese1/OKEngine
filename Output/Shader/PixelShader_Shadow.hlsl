@@ -55,5 +55,5 @@ float4 PSMain(PS_INPUT Input) : SV_TARGET
     ////알파값에 따라 그림자를 클리핑할 것인지.. 
     //clip(diffuse.a - 0.15f);
     
-    return Input.PosH;
+    return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }

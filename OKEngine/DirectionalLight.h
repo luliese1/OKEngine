@@ -13,9 +13,11 @@ public:
 	void SetAmbient(Vector4 input);
 	void SetDiffuse(Vector4 input);
 	void SetSpecular(Vector4 input);
-	void SetDirection(Vector4 input);
+	void SetDirection(Vector3 input);
 
 private:
 	DirectionalLightInfo m_DirectionalLightInfo;
+
+
 };
 

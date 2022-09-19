@@ -48,10 +48,10 @@ void Device::Flush()
 	ID3D11RenderTargetView* nullViews[] = { nullptr };
 	m_pD3DContext->OMSetRenderTargets(_countof(nullViews), nullViews, nullptr);
 
-	ID3D11ShaderResourceView* nullSRVViews[8] = { nullptr, };
+	ID3D11ShaderResourceView* nullSRVViews[32] = { nullptr, };
 
-	m_pD3DContext->VSSetShaderResources(0, _countof(nullViews), nullSRVViews);
-	m_pD3DContext->PSSetShaderResources(0, _countof(nullViews), nullSRVViews);
+	m_pD3DContext->VSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
+	m_pD3DContext->PSSetShaderResources(0, _countof(nullSRVViews), nullSRVViews);
 
 	ID3D11VertexShader* nullVS = { nullptr };
 	ID3D11PixelShader* nullPS = { nullptr };

@@ -45,7 +45,7 @@ int DXGraphicsEngine::Initialize(GRAPHICSENGINE_ENGINE_DESC& GraphicsEngineDesc)
 
 	m_ScreenInfo.m_ScreenWidth = GraphicsEngineDesc.ScreenWidth;
 	m_ScreenInfo.m_ScreenHeight = GraphicsEngineDesc.ScreenHeight;
-	m_ScreenInfo.m_4xMsaaFlag = true;
+	m_ScreenInfo.m_4xMsaaFlag = false;
 	m_ScreenInfo.m_4xMsaaQuality = 0;
 
 	m_Device->Initialize();
@@ -101,10 +101,6 @@ void DXGraphicsEngine::OnResize(int Width, int Height)
 	m_ResourceManager->OnResize(m_ScreenInfo);
 }
 
-//std::shared_ptr<RenderMessage_BeginRender> msg = std::make_shared<RenderMessage_BeginRender>();
-//msg->SetCameraInfo(cameraInfo);
-//m_RenderMessageQueue->PushMessage(msg);
-
 void DXGraphicsEngine::StartRender()
 {
 	StartRender_Excute();
@@ -157,6 +153,7 @@ void DXGraphicsEngine::DeleteObject(size_t MeshID)
 void DXGraphicsEngine::BindRenderPass(std::wstring passName)
 {
 	auto Foundpass = m_ResourceManager->GetPass(passName);
+	m_Device->Flush();
 
 	if (Foundpass == nullptr)
 	{
@@ -218,6 +215,7 @@ void DXGraphicsEngine::BindRenderPass(std::wstring passName)
 void DXGraphicsEngine::BindPostProcessPass(std::wstring passName)
 {
 	m_BindingPostProcessPass = m_ResourceManager->GetPass(passName);
+	m_Device->Flush();
 
 	if (m_BindingPostProcessPass == nullptr)
 	{
@@ -316,9 +314,10 @@ void DXGraphicsEngine::SetPerObjectConstantBuffer(void* bufferSrc)
 		}
 	}
 }
-void DXGraphicsEngine::SetTexture(GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT* resourceInputLayout, UINT resourceInputLayoutCnt)
+void DXGraphicsEngine::SetTextures(GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT* resourceInputLayout, UINT resourceInputLayoutCnt)
 {
 	std::vector<ComPtr<ID3D11ShaderResourceView>> bindingTextures;
+	//m_Device->Flush();
 
 	for (UINT inputlayoutIdx = 0; inputlayoutIdx < resourceInputLayoutCnt; inputlayoutIdx++)
 	{
@@ -334,6 +333,11 @@ void DXGraphicsEngine::SetTexture(GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT* r
 		case SHADER_RESOURCE_SOURCE::PASS:
 			{
 				bindingTextures.push_back(m_ResourceManager->GetPass(inputlayout.m_ResourceName)->GetShaderResourceView((UINT)inputlayout.m_ResourceIndex));
+			}
+			break;
+		case SHADER_RESOURCE_SOURCE::PASSDEPTH:
+			{
+				bindingTextures.push_back(m_ResourceManager->GetPass(inputlayout.m_ResourceName)->GetDepthStencilView()->GetShaderResourceView());
 			}
 			break;
 		case SHADER_RESOURCE_SOURCE::TEXTURE:
@@ -507,6 +511,9 @@ void DXGraphicsEngine::Present_Execute()
 		RECT pos{ i * (int)BoxSize.x, m_ScreenInfo.m_ScreenHeight - (int)BoxSize.y,  (i + 1) * (int)BoxSize.x, m_ScreenInfo.m_ScreenHeight };
 		m_SpriteBatch->Draw(BasicPass->GetShaderResourceView(i).Get(), pos);
 	};
+
+	RECT pos{ 4 * (int)BoxSize.x, m_ScreenInfo.m_ScreenHeight - (int)BoxSize.y,  (5) * (int)BoxSize.x, m_ScreenInfo.m_ScreenHeight };
+	m_SpriteBatch->Draw(m_ResourceManager->GetPass(L"Shadow")->GetDepthStencilView()->GetShaderResourceView().Get(), pos);
 
 	m_SpriteBatch->End();
 	m_SwapChain->Present();

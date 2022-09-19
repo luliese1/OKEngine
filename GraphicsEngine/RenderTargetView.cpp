@@ -88,9 +88,9 @@ void RenderTargetView::OnResize(DXGI_FORMAT format, ScreenInfo& SInfo, std::shar
 	m_Texture->Release();
 	m_SRV->Release();
 	m_RTV->Release();
-	m_SingleSampledTexture->Release();
-	m_SingleSampledSRV->Release();
-	m_SingleSampledRTV->Release();
+	//m_SingleSampledTexture->Release();
+	//m_SingleSampledSRV->Release();
+	//m_SingleSampledRTV->Release();
 
 	m_MSAAFlag = SInfo.m_4xMsaaFlag;
 

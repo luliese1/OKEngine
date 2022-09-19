@@ -22,8 +22,8 @@ public:
 	Vector3 GetPosition() const { return m_Position; }
 	void SetPosition(Vector3 val) { m_Position = val; }
 
-	DirectX::XMMATRIX GetWorldTM() const { return m_WorldTM; }
-	DirectX::XMMATRIX GetLocalTM() const { return m_LocalTM; }
+	Matrix GetWorldTM() const { return m_WorldTM; }
+	Matrix GetLocalTM() const { return m_LocalTM; }
 
 	void Rotate(Vector3 val);
 	void Translate(Vector3 val);

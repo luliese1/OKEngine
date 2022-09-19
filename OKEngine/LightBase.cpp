@@ -1,10 +1,11 @@
 #include "EnginePCH.h"
 #include "LightBase.h"
 #include "MeshRenderer.h"
+#include "Transform.h"
 
 void LightBase::Init()
 {
-
+	m_Transform = GetComponent<Transform>();
 }
 
 void LightBase::Update()
@@ -14,7 +15,7 @@ void LightBase::Update()
 
 LightBase::~LightBase()
 {
-
+	
 }
 
 LightBase::LightBase(LightType type) : m_LightType(type)

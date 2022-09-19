@@ -23,7 +23,6 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 	std::vector<ObjectGUID> staticMeshGUIDs;
 	std::vector<StaticMesh> staticMeshInfo;
 	staticMeshInfo.reserve(m_MeshQueue.size());
-	LoadLightInfos();
 
 	//컬링
 	//오브젝트 출력할것들 선별
@@ -61,11 +60,11 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 	if (m_LightInfo.DirectionalLightCnt > 0)
 	{
 		CameraInfo shadowInfo;
-		Matrix LightMat = DirectX::XMMatrixRotationRollPitchYaw(1.57f, 0.f, 0.f);
-		LightMat.Translation({0.f, 20.f, 5.f});
+		Vector3 LightPosition = {0.f, 10.f, 0.f};
+		Matrix LightMat = m_LightQueue.front()->GetComponent<Transform>()->GetWorldTM() * Matrix::CreateTranslation(LightPosition);
 
-		shadowInfo.m_ProjMatrix = camera->GetProjectionMatrix();
-		shadowInfo.m_ViewMatrix = camera->GetViewMatrix();
+		shadowInfo.m_ProjMatrix = DirectX::XMMatrixOrthographicLH(2048, 2048, 0.f, 20);
+		shadowInfo.m_ViewMatrix = LightMat.Invert();
 		shadowInfo.m_ViewProjectionMatrix = shadowInfo.m_ViewMatrix * shadowInfo.m_ProjMatrix;
 		shadowInfo.m_ViewProjectionMatrixInverseTranspose = shadowInfo.m_ViewProjectionMatrix.Invert();
 
@@ -74,6 +73,8 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 		Graphics->BindRenderPass(L"Shadow");
 		Graphics->RenderObjects(staticMeshGUIDs.data(), staticMeshInfo.data(), sizeof(StaticMesh), staticMeshGUIDs.size());
 	}
+
+	LoadLightInfos();
 
 	CameraInfo cameraInfo;
 
@@ -93,9 +94,10 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 	{
 		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 0},
 		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 1},
-		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 3}
+		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 3},
+		{SHADER_RESOURCE_SOURCE::PASSDEPTH, L"Basic", 3},
 	};
-	Graphics->SetTexture(lightInput, 3);
+	Graphics->SetTextures(lightInput, 3);
 	Graphics->SetPerObjectConstantBuffer((void*)&m_LightInfo);
 	Graphics->ExecutePass();
 
@@ -168,9 +170,9 @@ void MeshRenderer::LoadLightInfos()
 				{
 					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt] = spot->GetSpotLightInfo();
 					auto info = spot->GetComponent<Transform>()->GetWorldTM();
-					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.x = info.r[3].m128_f32[0];
-					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.y = info.r[3].m128_f32[1];
-					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.z = info.r[3].m128_f32[2];
+					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.x = info.m[3][0];
+					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.y = info.m[3][1];
+					m_LightInfo.SpotInfos[m_LightInfo.SpotLightCnt].PositionRange.z = info.m[3][2];
 					m_LightInfo.SpotLightCnt++;
 				}
 			}
@@ -186,9 +188,9 @@ void MeshRenderer::LoadLightInfos()
 				{
 					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt] = point->GetPointLIghtInfo();
 					auto info = point->GetComponent<Transform>()->GetWorldTM();
-					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.x = info.r[3].m128_f32[0];
-					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.y = info.r[3].m128_f32[1];
-					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.z = info.r[3].m128_f32[2];
+					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.x = info.m[3][0];
+					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.y = info.m[3][1];
+					m_LightInfo.PointInfos[m_LightInfo.PointLightCnt].PositionRange.z = info.m[3][2];
 					m_LightInfo.PointLightCnt++;
 				}
 			}

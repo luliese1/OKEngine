@@ -8,7 +8,7 @@ void DepthStencilView::Initialize(std::shared_ptr<Device> device, ScreenInfo& SI
 {
 	//뎁스스텐실 버퍼와 뷰를 생성한다.
 
-	OnResize(SInfo, DXGI_FORMAT_D24_UNORM_S8_UINT, device);
+	OnResize(SInfo, DXGI_FORMAT_R24G8_TYPELESS, device);
 	
 	D3D11_DEPTH_STENCIL_DESC depthstencilStateDesc;
 	//DepthStencilState
@@ -91,18 +91,9 @@ void DepthStencilView::OnResize(ScreenInfo& Sinfo, DXGI_FORMAT format, std::shar
 
 	DepthBufferDesc.Usage = D3D11_USAGE_DEFAULT; //텍스처의 용도. 자원을 GPU가 읽고 써야한다면 Default. CPU는 읽거나 쓸 수 없음\
 	//이외에도 IMMUTABLE, DYNAMIC, STAGING... 이 있다
-	DepthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL; // 자원을 파이프라인에 어떤식으로 묶을 것인가? 
+	DepthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE; // 자원을 파이프라인에 어떤식으로 묶을 것인가? 
 	DepthBufferDesc.CPUAccessFlags = 0; //CPU가 접근하는 방식. 깊이스텐실은 GPU만 읽고 쓴다. 그러므로 0
 	DepthBufferDesc.MiscFlags = 0; //기타 플래그
-
-	//뎁스스텐실의 텍스쳐의 쉐이더리소스 정보를 담은 구조체
-	D3D11_SHADER_RESOURCE_VIEW_DESC DepthBufferSRVDesc;
-	ZeroMemory(&DepthBufferSRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-
-	DepthBufferSRVDesc.Format = DepthBufferDesc.Format;
-	DepthBufferSRVDesc.Texture2D.MipLevels = 0; // 크기
-	DepthBufferSRVDesc.Texture2D.MostDetailedMip = 0;
-
 
 	//4X MSAA를 사용할때는 스왑체인의 설정과 동일하게.
 	// 4X MSAA를 사용하려면 ? => 스왑 체인에 대한 MSAA 매개 변수를 설정해줍니다.
@@ -124,10 +115,21 @@ void DepthStencilView::OnResize(ScreenInfo& Sinfo, DXGI_FORMAT format, std::shar
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
 	HR(_device->CreateDepthStencilView(m_DepthStencilBuffer.Get(), &depthStencilViewDesc, &m_DepthStencilView));
+
+	//뎁스스텐실의 텍스쳐의 쉐이더리소스 정보를 담은 구조체
+	D3D11_SHADER_RESOURCE_VIEW_DESC DepthBufferSRVDesc;
+	ZeroMemory(&DepthBufferSRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+
+	DepthBufferSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	DepthBufferSRVDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	DepthBufferSRVDesc.Texture2D.MipLevels = 1; // 크기
+
+	HR(_device->CreateShaderResourceView(m_DepthStencilBuffer.Get(), &DepthBufferSRVDesc, &m_DepthStencilSRV));
+	
 }
 
 Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DepthStencilView::m_DepthStencilState;

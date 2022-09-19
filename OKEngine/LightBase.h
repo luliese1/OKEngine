@@ -1,6 +1,8 @@
 #pragma once
 #include "ComponentBase.h"
 
+class Transform;
+
 class LightBase : public ComponentBase
 {
 public:
@@ -21,6 +23,8 @@ public:
 
 protected:
 	LightBase(LightType type);
+	std::weak_ptr<Transform> m_Transform;
+
 	const LightType m_LightType;
 };
 

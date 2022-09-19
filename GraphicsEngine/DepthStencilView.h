@@ -8,6 +8,8 @@ public:
 	void Initialize(std::shared_ptr<Device> device, ScreenInfo& SInfo);
 
 	ComPtr<ID3D11DepthStencilView> GetDepthStencilView(){ return m_DepthStencilView; }
+	ComPtr<ID3D11ShaderResourceView> GetShaderResourceView() { return m_DepthStencilSRV; }
+
 	ComPtr<ID3D11DepthStencilState> GetDepthStencilState(){ return m_DepthStencilState;}
 	ComPtr<ID3D11DepthStencilState> GetDisableDepthStencilState() { return m_DepthDisableStencilState; }
 
@@ -17,7 +19,7 @@ public:
 private:
 	
 	ComPtr<ID3D11DepthStencilView> m_DepthStencilView;
-	//ComPtr<ID3D11ShaderResourceView> m_DepthStencilSRV;
+	ComPtr<ID3D11ShaderResourceView> m_DepthStencilSRV;
 	ComPtr<ID3D11Texture2D> m_DepthStencilBuffer;
 
 	static ComPtr<ID3D11DepthStencilState> m_DepthStencilState;

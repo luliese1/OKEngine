@@ -27,7 +27,6 @@ void TestScene::Test()
 	LoadObject(Box, boxid);
 
 	std::shared_ptr<GameObject> Genji = MakeGameObject(L"Genji");
-	Genji->GetComponent<Transform>()->SetScale({ 5.0f, 0.3f, 5.f });
 	Genji->GetComponent<Transform>()->Translate({ 0.0f,1.0f,0.f });
 	LoadObject(Genji, genjiid);
 
@@ -38,7 +37,7 @@ void TestScene::Test()
 		lightComp->SetAmbient({ 0.7f, 0.7f, 0.7f, 1.f });
 		lightComp->SetDiffuse({ 0.7f, 0.7f, 0.7f, 1.f });
 		lightComp->SetSpecular({ 0.5f, 0.5f, 0.5f, 1.f });
-		lightComp->SetDirection({ 0.0f, -1.0f, 0.0f, 0.f });
+		lightComp->SetDirection({ 0.0f, -1.0f, 0.0f});
 	}
 
 

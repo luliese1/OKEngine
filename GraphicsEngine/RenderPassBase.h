@@ -42,6 +42,7 @@ public:
 	virtual void UpdatePerObjectBuffer() abstract;
 
 	virtual void Finalize() abstract;
+	virtual std::shared_ptr<DepthStencilView> GetDepthStencilView() const { return nullptr; }
 
 public:
 	const ePassType GetPassType() const { return m_PassType; }
@@ -51,6 +52,7 @@ protected:
 
 	std::wstring m_PassName;
 	const ePassType m_PassType;
+
 	UINT m_RenderTargetTextureCnt;
 	ScreenInfo m_TextureSizeInfo;
 

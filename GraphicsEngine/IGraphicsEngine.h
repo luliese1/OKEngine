@@ -46,10 +46,8 @@ public:
 
 	//PerObjectBuffer 채워넣기
 	virtual void SetPerObjectConstantBuffer(void* ConstantBuffer) abstract;
-
 	//BindTexture, 텍스쳐를 바인딩한다. 
-	virtual void SetTexture(GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT* resourceInputLayout, UINT resourceInputLayoutCnt) abstract;
-	
+	virtual void SetTextures(GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT* resourceInputLayout, UINT resourceInputLayoutCnt) abstract;
 	//실행
 	virtual void ExecutePass() abstract;
 

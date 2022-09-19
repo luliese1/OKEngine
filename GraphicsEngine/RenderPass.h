@@ -28,8 +28,8 @@ public:
 	virtual void UpdatePerFrameBuffer() override;
 	virtual void UpdatePerObjectBuffer() override;
 
+	virtual std::shared_ptr<DepthStencilView> GetDepthStencilView() const { return m_DepthStencilView; };
 public:
-	std::shared_ptr<DepthStencilView> GetDepthStencilView() const { return m_DepthStencilView; }
 
 
 	//쉐이더의 버퍼 구성은 perFrame buffer와 perObjectBuffer로 이루어진다. 알아서 알잘딱 데이터를 넣어준다.
