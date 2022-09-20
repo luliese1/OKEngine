@@ -166,6 +166,7 @@
     <ClInclude Include="ColliderBase.h" />
     <ClInclude Include="ColliderUpdater.h" />
     <ClInclude Include="ComponentBase.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="DataStruct.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="dllDefine.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="OKEngine.h" />
     <ClInclude Include="EnginePCH.h" />
+    <ClInclude Include="OKMathHelper.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ResourceHashTable.h" />
     <ClInclude Include="Scene.h" />
@@ -201,6 +203,7 @@
     <ClCompile Include="ColliderBase.cpp" />
     <ClCompile Include="ColliderUpdater.cpp" />
     <ClCompile Include="ComponentBase.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DataStruct.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="dllmain.cpp" />
@@ -221,6 +224,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="OKMathHelper.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="ResourceHashTable.cpp" />
     <ClCompile Include="Scene.cpp" />

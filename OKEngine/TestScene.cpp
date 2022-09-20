@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "DirectionalLight.h"
 #include "SpotLIght.h"
+#include "Controller.h"
 
 void TestScene::Test()
 {
@@ -38,6 +39,7 @@ void TestScene::Test()
 		lightComp->SetDiffuse({ 0.7f, 0.7f, 0.7f, 1.f });
 		lightComp->SetSpecular({ 0.5f, 0.5f, 0.5f, 1.f });
 		lightComp->SetDirection({ 0.0f, -1.0f, 0.0f});
+		Lightobj->AddComponent<Controller>();
 	}
 
 

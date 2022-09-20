@@ -108,6 +108,9 @@
     <Filter Include="Managers\GeometryGenerator">
       <UniqueIdentifier>{049e9ec8-8f10-4bcc-b0b4-323b8ba9aca8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UserComponent">
+      <UniqueIdentifier>{d7ea3db5-28bb-4b11-b3d1-218fc36354dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EnginePCH.h">
@@ -209,6 +212,12 @@
     <ClInclude Include="SkinnedMesh.h">
       <Filter>Component\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>UserComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="OKMathHelper.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EnginePCH.cpp">
@@ -309,6 +318,12 @@
     </ClCompile>
     <ClCompile Include="SkinnedMesh.cpp">
       <Filter>Component\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>UserComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="OKMathHelper.cpp">
+      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

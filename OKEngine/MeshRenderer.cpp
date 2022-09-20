@@ -61,9 +61,10 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 	{
 		CameraInfo shadowInfo;
 		Vector3 LightPosition = {0.f, 10.f, 0.f};
-		Matrix LightMat = m_LightQueue.front()->GetComponent<Transform>()->GetWorldTM() * Matrix::CreateTranslation(LightPosition);
+		Matrix LightMat = m_LightQueue.front()->GetComponent<Transform>()->GetWorldTM() *  Matrix::CreateTranslation(LightPosition); 
 
-		shadowInfo.m_ProjMatrix = DirectX::XMMatrixOrthographicLH(2048, 2048, 0.f, 20);
+		//shadowInfo.m_ProjMatrix = camera->GetOthogonalProjectionMatrix();
+		shadowInfo.m_ProjMatrix = DirectX::XMMatrixOrthographicLH(2048, 2048, 0.f, 1000);
 		shadowInfo.m_ViewMatrix = LightMat.Invert();
 		shadowInfo.m_ViewProjectionMatrix = shadowInfo.m_ViewMatrix * shadowInfo.m_ProjMatrix;
 		shadowInfo.m_ViewProjectionMatrixInverseTranspose = shadowInfo.m_ViewProjectionMatrix.Invert();

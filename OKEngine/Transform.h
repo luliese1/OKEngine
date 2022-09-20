@@ -32,14 +32,35 @@ public:
 	bool GetIsCalculated() const { return m_IsCalculated; }
 	void SetIsCalculated(bool val) { m_IsCalculated = val; }
 
+	Matrix GetLocalSclTM() const { return m_LocalSclTM; }
+	void SetLocalSclTM(Matrix val) { m_LocalSclTM = val; }
+	Matrix GetLocalRotTM() const { return m_LocalRotTM; }
+	void SetLocalRotTM(Matrix val) { m_LocalRotTM = val; }
+	Matrix GetLocalPosTM() const { return m_LocalPosTM; }
+	void SetLocalPosTM(Matrix val) { m_LocalPosTM = val; }
+
+	Vector3 GetForward();
+	Vector3 GetUp();
+	Vector3 GetRight();
+
+
 protected:
 	//SRT
 	Vector3 m_Scale;
 	Vector3 m_Rotation;
 	Vector3 m_Position;
 
+	Matrix m_LocalSclTM;
+	Matrix m_LocalRotTM;
+	Matrix m_LocalPosTM;
+
+	Matrix m_WorldSclTM;
+	Matrix m_WorldRotTM;
+	Matrix m_WorldPosTM;
+
 	Matrix m_LocalTM;
 	Matrix m_WorldTM;
+
 	bool m_IsCalculated;
 
 private:
