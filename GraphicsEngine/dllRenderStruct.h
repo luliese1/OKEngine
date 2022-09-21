@@ -5,13 +5,7 @@
 #define MAXIMUM_RENDERTARGET_TEXTURE_PER_MESH 8
 #define MAXIMUM_SAMPLER_RESOURCE_PER_MESH 4
 
-struct GRAPHICENGINELIB_API CameraInfo
-{
-	DirectX::SimpleMath::Matrix m_ViewMatrix;
-	DirectX::SimpleMath::Matrix m_ProjMatrix;
-	DirectX::SimpleMath::Matrix m_ViewProjectionMatrix;
-	DirectX::SimpleMath::Matrix m_ViewProjectionMatrixInverseTranspose;
-};
+
 struct GRAPHICENGINELIB_API RenderInfo
 {
 	UINT m_CubeMapID;
@@ -19,7 +13,7 @@ struct GRAPHICENGINELIB_API RenderInfo
 
 struct GRAPHICENGINELIB_API MeshInfo
 {
-	MeshInfo() : m_MeshId(0), m_subMeshId(0), m_MaterialID(0), m_TextureID(), m_TextureCnt(0), m_RasterizerState(0), m_PassName(), m_SamplerId(0) {}
+	MeshInfo() : m_MeshId(0), m_subMeshId(0), m_MaterialID(0), m_TextureID(), m_TextureCnt(0), m_PassName(){}
 	MeshInfo& operator =(const MeshInfo& info) = default;
 
 	size_t  m_MeshId;
@@ -32,9 +26,6 @@ struct GRAPHICENGINELIB_API MeshInfo
 	UINT8 m_TextureCnt;
 
 	std::wstring m_PassName;
-
-	UINT8 m_RasterizerState;
-	size_t  m_SamplerId;
 };
 
 struct GRAPHICENGINELIB_API LightInfo
@@ -128,6 +119,35 @@ struct GRAPHICENGINELIB_API GRAPHICSENGINE_PASS_DESC
 	GRAPHICSENGINE_SHADER_DESC* m_ShaderDesc;
 	UINT m_ShaderCount;
 };
+
+struct GRAPHICENGINELIB_API GRAPHICSENGINE_RASTERIZER_DESC
+{
+	enum class eFillMode 
+	{
+		WIRE = 2,
+		SOLID = 3
+	};
+
+	enum class eCullMode 
+	{
+		CULL_NONE = 1,
+		CULL_FRONT = 2,
+		CULL_BACK = 3
+	};
+
+	eFillMode m_FillMode = eFillMode::WIRE;
+	eCullMode m_CullMode = eCullMode::CULL_NONE;
+
+	int m_DepthBias = 0;
+	float m_DepthBiasClamp = 0.000f;
+	float m_SlopeScaledDepthBias = 0.000f;
+
+	bool m_DepthClipEnable = true;
+	bool m_ScissorEnable = true;
+	bool m_MultiSampleEnable = true;
+	bool m_AntialiasedLineEnable = true;
+};
+
 //엔진을 생성할때 기본적으로 필요한 데이터들을 여기다 몰아넣자.
 struct GRAPHICENGINELIB_API GRAPHICSENGINE_ENGINE_DESC
 {

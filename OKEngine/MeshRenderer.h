@@ -32,6 +32,12 @@ public:
 		SpotLightInfo SpotInfos[MAX_SPOT_LIGHT_CNT];
 	};
 
+	struct PerFrameBuffer
+	{
+		CameraInfo m_cameraInfo;
+		LightInfo m_LightInfo;
+	};
+
 public:
 	static void Render(std::shared_ptr<Camera> camera, RenderInfo infos ,std::shared_ptr<IGraphicsEngine> Graphics);
 
@@ -39,14 +45,13 @@ public:
 	static void PushUI(std::shared_ptr<ComponentBase>);
 	static void PushLight(std::shared_ptr<ComponentBase>);
 
-	static void LoadLightInfos();
+	static void LoadLightInfos(LightInfo& Lightinfo);
 
 	static void Finalize();
 private:
 	static std::queue<std::shared_ptr<Mesh>> m_MeshQueue;
 	static std::queue< std::shared_ptr<UI>> m_UIQueue;
 	static std::queue< std::shared_ptr<LightBase>> m_LightQueue;
-	static LightInfo m_LightInfo;
 
 	//std::queue<ColliderBase*> m_Colliders;
 };

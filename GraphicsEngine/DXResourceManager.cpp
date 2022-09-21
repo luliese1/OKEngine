@@ -110,7 +110,7 @@ void DXResourceManager::CreateMaterial(size_t ObjecID)
 
 }
 
-void DXResourceManager::CreateSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureOutside, size_t ObjecID)
+void DXResourceManager::CreateSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureOutside, std::wstring ObjecID)
 {
 	if (m_Device == nullptr)
 		Assert("device null error : CreateSampler");
@@ -118,6 +118,30 @@ void DXResourceManager::CreateSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_AD
 
 	samplerState->Initialize(filter, textureOutside, m_Device);
 	m_SamplerState.emplace(ObjecID, samplerState);
+}
+
+void DXResourceManager::CreateRasterizerState(std::wstring RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc)
+{
+	if (m_Device == nullptr)
+		Assert("device null error : CreateRasterizer");
+
+	ComPtr<ID3D11RasterizerState> rasterizerState;
+
+	D3D11_RASTERIZER_DESC D3D11rasterizerDesc;
+
+	D3D11rasterizerDesc.FillMode = (D3D11_FILL_MODE)(int)rasterizerDesc.m_FillMode;
+	D3D11rasterizerDesc.CullMode = (D3D11_CULL_MODE)(int)rasterizerDesc.m_CullMode;
+
+	D3D11rasterizerDesc.DepthBias = rasterizerDesc.m_DepthBias;
+	D3D11rasterizerDesc.DepthBiasClamp = rasterizerDesc.m_DepthBiasClamp;
+	D3D11rasterizerDesc.SlopeScaledDepthBias = rasterizerDesc.m_SlopeScaledDepthBias;
+
+	D3D11rasterizerDesc.DepthClipEnable = rasterizerDesc.m_DepthClipEnable;
+	D3D11rasterizerDesc.ScissorEnable = rasterizerDesc.m_ScissorEnable;
+	D3D11rasterizerDesc.MultisampleEnable = rasterizerDesc.m_MultiSampleEnable;
+	D3D11rasterizerDesc.AntialiasedLineEnable = rasterizerDesc.m_AntialiasedLineEnable;
+
+	m_Device->GetDevice()->CreateRasterizerState(&D3D11rasterizerDesc, rasterizerState.GetAddressOf());
 }
 
 void DXResourceManager::CreateRenderPass(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& shaderPassDesc)
@@ -269,7 +293,7 @@ void DXResourceManager::DeleteMaterial(size_t ObjecID)
 	}
 }
 
-void DXResourceManager::DeleteSamplerState(size_t ObjecID)
+void DXResourceManager::DeleteSamplerState(std::wstring ObjecID)
 {
 	auto find = m_SamplerState.find(ObjecID);
 	if (find == m_SamplerState.end())
@@ -375,7 +399,7 @@ std::shared_ptr<VertexShader> DXResourceManager::GetVertexShader(size_t ObjecID)
 	return ret->second;
 }
 
-std::shared_ptr<SamplerState> DXResourceManager::GetSamplerState(size_t ObjecID)
+std::shared_ptr<SamplerState> DXResourceManager::GetSamplerState(std::wstring ObjecID)
 {
 	auto ret = m_SamplerState.find(ObjecID);
 	if (ret == m_SamplerState.end())
@@ -424,8 +448,10 @@ void DXResourceManager::TestFunction()
 	CreateVertexBuffer(vertices, sizeof(Vertex), verticesSize, 101, 0);
 	CreateIndexBuffer(indices, indicesSize, 101, 0);
 
-	CreateSamplerState(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP, 101);
-	CreateSamplerState(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_WRAP, 102);
+	CreateSamplerState(D3D11_FILTER_MIN_MAG_MIP_LINEAR, D3D11_TEXTURE_ADDRESS_WRAP, L"g_samLinear");
+	CreateSamplerState(D3D11_FILTER_ANISOTROPIC, D3D11_TEXTURE_ADDRESS_WRAP, L"g_samAnisotropic");
+	CreateSamplerState(D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT, D3D11_TEXTURE_ADDRESS_BORDER, L"g_samShadow");
+
 }
 
 void DXResourceManager::OnResize(ScreenInfo& sinfo)

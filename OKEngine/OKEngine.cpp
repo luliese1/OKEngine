@@ -17,6 +17,12 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	EngineDesc.ScreenHeight = ScreenHeight;
 
 	m_GraphicsEngine->Initialize(EngineDesc);
+	
+	// -------------------------- SamplerState ----------------------------
+
+	//m_GraphicsEngine->CreateSamplerState()
+
+	// -------------------------- Rasterizer State ----------------------------
 
 	// --------------------------  RenderPass  ----------------------------
 
@@ -31,7 +37,7 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	 {{"USING_ALBEDO", NULL}, {"USING_NORMALMAP", NULL}}
 	};
 
-	std::wstring vsMesh = L"./Shader/VetexShader_Mesh.hlsl";
+	std::wstring vsMesh = L"./Shader/VertexShader_Mesh.hlsl";
 	std::wstring psMesh = L"./Shader/PixelShader_Mesh.hlsl";
 
 	GRAPHICSENGINE_SHADER_DESC BaseShaderDesc[] =
@@ -62,13 +68,14 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	GRAPHICSENGINE_PASS_DESC ShadowPass;
 	ShadowPass.m_PassName = L"Shadow";
 
+	std::wstring vsShadow = L"./Shader/VertexShader_Shadow.hlsl";
 	std::wstring psShadow = L"./Shader/PixelShader_Shadow.hlsl";
 
 	GRAPHICSENGINE_SHADER_DESC ShadowShaderDesc[] =
 	{
-		{L"NoneTexStatic", vsMesh, psShadow, nullptr, 0 },
-		{L"TexStatic", vsMesh, psShadow , &staticmacros[0].front(), (UINT)staticmacros[0].size()},
-		{L"TexNormalStatic", vsMesh, psShadow, &staticmacros[1].front(), (UINT)staticmacros[1].size()},
+		{L"NoneTexStatic", vsShadow, psShadow, nullptr, 0 },
+		{L"TexStatic", vsShadow, psShadow , &staticmacros[0].front(), (UINT)staticmacros[0].size()},
+		{L"TexNormalStatic", vsShadow, psShadow, &staticmacros[1].front(), (UINT)staticmacros[1].size()},
 	};
 
 	ShadowPass.m_ShaderDesc = ShadowShaderDesc;

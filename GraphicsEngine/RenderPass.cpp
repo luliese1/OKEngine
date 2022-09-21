@@ -84,6 +84,7 @@ void RenderPass::Initialize(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& p
 		}
 	}
 
+
 	//SetRenderTargetViewListForBinding();
 }
 
@@ -96,6 +97,9 @@ void RenderPass::Begin(std::shared_ptr<Device> device, std::shared_ptr<DepthSten
 		context->ClearRenderTargetView(iter.Get(), DirectX::Colors::Transparent);
 	}
 	context->ClearDepthStencilView(m_DepthStencilView->GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	ID3D11RasterizerState;
+
+	//context->RSSetState();
 	context->OMSetDepthStencilState(m_DepthStencilView->GetDepthStencilState().Get(), 0);
 }
 

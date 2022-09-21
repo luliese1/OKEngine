@@ -12,9 +12,22 @@ DirectionalLight::~DirectionalLight()
 
 }
 
-DirectionalLightInfo DirectionalLight::GetDirectionalLightInfo() const
+DirectionalLightInfo DirectionalLight::GetDirectionalLightInfo()
 {
+	m_DirectionalLightInfo.LightProjectionTM = GetViewMatrix() * GetProjectionMatrix();
 	return m_DirectionalLightInfo;
+}
+
+Matrix DirectionalLight::GetProjectionMatrix()
+{
+	return DirectX::XMMatrixOrthographicLH(10, 10, 0.f, 20);
+}
+
+Matrix DirectionalLight::GetViewMatrix()
+{
+	Vector3 LightPosition = { 0.f, 10.f, 0.f };
+
+	return (m_Transform.lock()->GetWorldTM() * Matrix::CreateTranslation(LightPosition)).Invert();
 }
 
 void DirectionalLight::SetAmbient(Vector4 input)
@@ -55,3 +68,4 @@ void DirectionalLight::SetDirection(Vector3 input)
 	transform->SetRotation({ pitch, yaw, roll });
 
 }
+

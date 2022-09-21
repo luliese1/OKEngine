@@ -18,6 +18,9 @@ public:
 public:
 	virtual void Init();
 	virtual void Update();
+	virtual Matrix GetProjectionMatrix();
+	virtual Matrix GetViewMatrix();
+
 	//virtual void LateUpdate();
 	virtual ~LightBase() ;
 

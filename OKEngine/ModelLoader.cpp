@@ -391,9 +391,6 @@ void ModelLoader::AttachMeshs(ObjectGUID meshid, shared_ptr<GameObject> targetOb
 
 				}
 
-				//임시설정
-				tempMeshInfo.m_SamplerId = 101;
-
 				tempMesh->SetMeshInfo(tempMeshInfo);
 			}
 			break;

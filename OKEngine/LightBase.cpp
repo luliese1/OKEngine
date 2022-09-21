@@ -13,6 +13,18 @@ void LightBase::Update()
 	MeshRenderer::PushLight(shared_from_this());
 }
 
+Matrix LightBase::GetProjectionMatrix()
+{
+	//return Matrix::Identity;
+	return Matrix();
+}
+
+Matrix LightBase::GetViewMatrix()
+{
+	//return Matrix::Identity;
+	return Matrix();
+}
+
 LightBase::~LightBase()
 {
 	

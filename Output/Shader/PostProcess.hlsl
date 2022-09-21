@@ -1,13 +1,8 @@
-#include "ShaderHelper.hlsl"
+#include "cbPerFrame.hlsl"
 
 //--------------------------------------------------------------------------------------
 // Globals
 //--------------------------------------------------------------------------------------
-//// PerFrame
-cbuffer cbPerFrame : register(b0)
-{
-    Camera g_Camera : packoffset(c0);
-};
 //// PerObject
 cbuffer cbPerObject : register(b1)
 {

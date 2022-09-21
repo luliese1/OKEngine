@@ -46,6 +46,8 @@ public:
 
 public:
 	const ePassType GetPassType() const { return m_PassType; }
+	ScreenInfo GetTextureSizeInfo() const { return m_TextureSizeInfo; }
+
 
 protected:
 	virtual void SetRenderTargetViewListForBinding();

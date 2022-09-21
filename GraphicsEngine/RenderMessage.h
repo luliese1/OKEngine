@@ -22,11 +22,11 @@ class RenderMessage_BeginRender : public RenderMessage
 {
 public:
 	virtual void Execute() override;
-public:
-	CameraInfo GetCameraInfo() const { return m_cameraInfo; }
-	void SetCameraInfo(CameraInfo val) { m_cameraInfo = val; }
-private:
-	CameraInfo m_cameraInfo;
+//public:
+//	CameraInfo GetCameraInfo() const { return m_cameraInfo; }
+//	void SetCameraInfo(CameraInfo val) { m_cameraInfo = val; }
+//private:
+//	CameraInfo m_cameraInfo;
 };
 
 class RenderMessage_EndRender : public RenderMessage

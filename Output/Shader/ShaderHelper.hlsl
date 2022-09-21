@@ -2,8 +2,7 @@ struct Material
 {
 	float4 Ambient;
 	float4 Diffuse;
-	float4 Specular; // w = SpecPower
-	//미러를 위한..?
+	float4 Specular; 
 	float4 Reflect;
 };
 struct Camera
@@ -13,19 +12,14 @@ struct Camera
     matrix g_ViewProjectionMatrix;
     matrix g_ViewProjectionInverseTransposeMatrix;
 };
+
+
 struct Transfrom
 {
     matrix g_World;
     matrix g_WorldInvTranspose;
     matrix g_WorldViewProjection;
 };
-//interface IBaseLight
-//{
-//    float4 IlluminateAmbient(float3 vNormal);
-//    float4 IlluminateDiffuse(float3 vNormal);
-//    float4 IlluminateSpecular(float3 vNormal, int specularPower);
-//    float4 GetLightResult(float3 vNormal, int specularPower);
-//};
 
 struct DirectionalLight //5
 {
@@ -36,7 +30,8 @@ struct DirectionalLight //5
 	//패딩을 하는 이유. hlsl은 4차원 벡터에 채워넣는 구조를 띈다.
 	//채워 넣되, 두개의 4차원 벡터 사이에 걸쳐 나누어지면 안된다.
 	float pad;
-
+	
+    matrix ViewProjectionMatrix;
 };
 struct PointLight //5
 {
@@ -50,6 +45,8 @@ struct PointLight //5
 	//거리에 따른 감쇠를 위한
 	float3 Att;
 	float pad;
+	
+    matrix ViewProjectionMatrix;
 };
 struct SpotLight //6
 {
@@ -67,7 +64,22 @@ struct SpotLight //6
 	//거리에 따른 감쇠를 위한
 	float3 Att;
 	float pad;
+	
+    matrix ViewProjectionMatrix;
 };
+
+struct Light
+{
+    uint DirectionalLightCnt;
+    uint PointLightCnt;
+    uint SpotLightCnt;
+    uint pad;
+    
+    DirectionalLight g_DirLight[3];
+    PointLight g_PointLight[10];
+    SpotLight g_SpotLight[10];
+};
+
 
 //Directional
 void ComputeDirectionalLight

@@ -91,12 +91,18 @@ struct ModelManageInfo
 
 };
 
+struct LightDataBase
+{
+	Matrix LightProjectionTM;
+};
+
 struct DirectionalLightInfo
 {
 	Vector4 Ambient;
 	Vector4 Diffuse;
 	Vector4 Specular;
 	Vector4 Direction;
+	Matrix LightProjectionTM;
 };
 
 struct PointLightInfo
@@ -106,7 +112,7 @@ struct PointLightInfo
 	Vector4 Specular;
 	Vector4 PositionRange;
 	Vector4 Attenuation;
-
+	Matrix LightProjectionTM;
 };
 
 struct SpotLightInfo
@@ -117,4 +123,14 @@ struct SpotLightInfo
 	Vector4 PositionRange;
 	Vector4 DirectionSpot;
 	Vector4 Attenuation;
+	Matrix LightProjectionTM;
 };
+
+struct CameraInfo
+{
+	Matrix m_ViewMatrix;
+	Matrix m_ProjMatrix;
+	Matrix m_ViewProjectionMatrix;
+	Matrix m_ViewProjectionMatrixInverseTranspose;
+};
+

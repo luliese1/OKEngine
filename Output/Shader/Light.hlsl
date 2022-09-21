@@ -1,25 +1,11 @@
-#include "ShaderHelper.hlsl"
+#include "cbPerFrame.hlsl"
 
 //--------------------------------------------------------------------------------------
 // Globals
 //--------------------------------------------------------------------------------------
-//// PerFrame
-cbuffer cbPerFrame : register(b0)
-{
-    Camera g_Camera : packoffset(c0);
-    
-};
 //// PerObject
 cbuffer cbPerObject : register(b1)
 {
-    uint DirectionalLightCnt : packoffset(c0.x);
-    uint PointLightCnt : packoffset(c0.y);
-    uint SpotLightCnt : packoffset(c0.z);
-    uint pad : packoffset(c0.w);
-    
-    DirectionalLight g_DirLight[3] : packoffset(c1);
-    PointLight g_PointLight[10] : packoffset(c16);
-    SpotLight g_SpotLight[10] : packoffset(c66);
 };
 //--------------------------------------------------------------------------------------
 // Textures and Samplers
@@ -32,6 +18,7 @@ Texture2D g_ShadowMap : register(t3);
 
 
 SamplerState g_samLinear : register(s0);
+SamplerState g_samShadow : register(s1);
 
 //--------------------------------------------------------------------------------------
 // Input / Output structures
@@ -72,25 +59,25 @@ PS_OUT PSMain(PS_INPUT Input)
 	
     float4 A, D, S;
     
-    for (uint diridx = 0; diridx < DirectionalLightCnt; diridx++)
+    for (uint diridx = 0; diridx < g_Light.DirectionalLightCnt; diridx++)
     {
-        ComputeDirectionalLight(Mat, g_DirLight[diridx], Normal, eyeVec, A, D ,S);
+        ComputeDirectionalLight(Mat, g_Light.g_DirLight[diridx], Normal, eyeVec, A, D, S);
         Ambient += A;
         Diffuse += D;
         Specular += S;
     }
     
-    for (uint Pointidx = 0; Pointidx < PointLightCnt; Pointidx++)
+    for (uint Pointidx = 0; Pointidx < g_Light.PointLightCnt; Pointidx++)
     {
-        ComputePointLight(Mat, g_PointLight[Pointidx], PosW, Normal, eyeVec, A, D, S);
+        ComputePointLight(Mat, g_Light.g_PointLight[Pointidx], PosW, Normal, eyeVec, A, D, S);
         Ambient += A;
         Diffuse += D;
         Specular += S;
     }
     
-    for (uint Spotidx = 0; Spotidx < Spotidx; Spotidx++)
+    for (uint Spotidx = 0; Spotidx < g_Light.SpotLightCnt; Spotidx++)
     {
-        ComputeSpotLight(Mat, g_SpotLight[Spotidx], PosW, Normal, eyeVec, A, D, S);
+        ComputeSpotLight(Mat, g_Light.g_SpotLight[Spotidx], PosW, Normal, eyeVec, A, D, S);
         Ambient += A;
         Diffuse += D;
         Specular += S;

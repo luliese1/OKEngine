@@ -1,28 +1,14 @@
-#include "ShaderHelper.hlsl"
+#include "cbPerFrame.hlsl"
+
 
 //--------------------------------------------------------------------------------------
 // Globals
 //--------------------------------------------------------------------------------------
-//// PerFrame
-cbuffer cbPerFrame : register(b0)
-{
-    Camera g_Camera : packoffset(c0); 
-    
-    uint DirectionalLightCnt : packoffset(c0.x);
-    uint PointLightCnt : packoffset(c0.y);
-    uint SpotLightCnt : packoffset(c0.z);
-    uint pad : packoffset(c0.w);
-    
-    DirectionalLight g_DirLight[3] : packoffset(c1);
-    PointLight g_PointLight[10] : packoffset(c16);
-    SpotLight g_SpotLight[10] : packoffset(c66);
-};
 //// PerObject
 cbuffer cbPerObject : register(b1)
 {
 
 };
-
 
 //--------------------------------------------------------------------------------------
 // Textures and Samplers
@@ -39,8 +25,6 @@ struct PS_INPUT
 {
     float4 PosH : SV_POSITION;
     float3 PosW : POSITION;
-    float3 Tangent : TANGENT;
-    float3 Normal : NORMAL;
     float2 Texcoord0 : TEXCOORD0;
     float2 Texcoord1 : TEXCOORD1;
 };

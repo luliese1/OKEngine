@@ -36,8 +36,9 @@ public:
 	void CreateVertexBuffer(void* vertices, int vertexStructSize, int vertexCount, size_t ObjecID, UINT index);
 	void CreateTexture(tstring path, size_t ObjecID);
 	void CreateMaterial(size_t ObjecID);
-	void CreateSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureOutside, size_t ObjecID);
-	
+	void CreateSamplerState(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureOutside, std::wstring ObjecID);
+	void CreateRasterizerState(std::wstring RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc);
+
 	void CreateRenderPass(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& shaderPassDesc);
 	void CreatePostProcessPass(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& shaderPassDesc);
 	void CreateShaderPass(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& shaderPassDesc);
@@ -47,7 +48,7 @@ public:
 	void DeleteVertexBuffer(size_t ObjecID, UINT subObjectID);
 	void DeleteTexture(size_t ObjecID);
 	void DeleteMaterial(size_t ObjecID);
-	void DeleteSamplerState(size_t ObjecID);
+	void DeleteSamplerState(std::wstring ObjecID);
 
 	std::shared_ptr<VertexBuffer> GetVertexBuffer(size_t, UINT);
 	std::shared_ptr<IndexBuffer> GetIndexBuffer(size_t, UINT);
@@ -55,7 +56,7 @@ public:
 	std::shared_ptr<Texture> GetTexture(size_t);
 	std::shared_ptr<PassBase> GetPass(std::wstring);
 
-	std::shared_ptr<SamplerState> GetSamplerState(size_t);
+	std::shared_ptr<SamplerState> GetSamplerState(std::wstring);
 
 	void TestFunction();
 
@@ -89,8 +90,9 @@ private:
 	std::unordered_map<size_t, std::shared_ptr<PixelShader>> m_PixelShaders;
 	std::unordered_map<size_t, std::shared_ptr<VertexShader>> m_VertexShaders;
 
-	//Sampler
-	std::unordered_map<size_t, std::shared_ptr<SamplerState>> m_SamplerState;
+	//States
+	std::unordered_map<std::wstring, std::shared_ptr<SamplerState>> m_SamplerState;
+	std::unordered_map<std::wstring, ComPtr<ID3D11RasterizerState>> m_RasterizerState;
 
 	std::shared_ptr<Device> m_Device;
 };

@@ -44,10 +44,9 @@ protected:
 
 	static std::shared_ptr<ConstantBuffer> m_PerFrameBuffer;
 
-	ComPtr<ID3DBlob> m_ShaderBlob;
-
 	std::vector<std::shared_ptr<ConstantBuffer>> m_ConstantBuffers;
 	std::vector<std::shared_ptr<TextureResourceBuffer>> m_TextureResourceBuffers;
 	std::vector<std::shared_ptr<SamplerBuffer>> m_SamplerBuffers;
 
+	ComPtr<ID3DBlob> m_ShaderBlob;
 };

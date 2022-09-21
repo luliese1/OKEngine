@@ -20,6 +20,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ASEParser", "ASEParser\D3DU
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{3555E8DB-62A0-4FD1-9B33-611ED8ED8290}"
 	ProjectSection(SolutionItems) = preProject
+		Output\Shader\cbPerFrame.hlsl = Output\Shader\cbPerFrame.hlsl
 		Output\Shader\Light.hlsl = Output\Shader\Light.hlsl
 		Output\Shader\PixelShader_Merger.hlsl = Output\Shader\PixelShader_Merger.hlsl
 		Output\Shader\PixelShader_Mesh.hlsl = Output\Shader\PixelShader_Mesh.hlsl
@@ -27,7 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shaders", "Shaders", "{3555
 		Output\Shader\PostProcess.hlsl = Output\Shader\PostProcess.hlsl
 		Output\Shader\ShaderHelper.hlsl = Output\Shader\ShaderHelper.hlsl
 		Output\Shader\VertexShader_Merger.hlsl = Output\Shader\VertexShader_Merger.hlsl
-		Output\Shader\VetexShader_Mesh.hlsl = Output\Shader\VetexShader_Mesh.hlsl
+		Output\Shader\VertexShader_Mesh.hlsl = Output\Shader\VertexShader_Mesh.hlsl
+		Output\Shader\VertexShader_Shadow.hlsl = Output\Shader\VertexShader_Shadow.hlsl
 	EndProjectSection
 EndProject
 Global

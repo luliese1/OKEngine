@@ -78,6 +78,7 @@ public:
 	virtual void CreateIndexBuffer(void* indices, int indexxCount, size_t MeshID, UINT subMeshID) override;
 	virtual void CreateTexture(std::wstring path, size_t TextureID) override;
 	virtual void CreateSamplerState(size_t SamplerID) override;
+	virtual void CreateRasterizerState(size_t RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc) override;
 
 	//데이터 삭제함수
 	virtual void DeleteMesh(size_t MeshID) override;
@@ -97,6 +98,9 @@ public:
 	//void Render_Execute(CameraInfo& cameraInfo, RenderInfo& renderInfo, MeshInfo* meshInfo, UINT meshInfoSize);
 	void Render_Execute(size_t MeshID, void* bufferSrc);
 	void Present_Execute();
+
+protected:
+	void SetViewport(float width, float height);
 
 private:
 

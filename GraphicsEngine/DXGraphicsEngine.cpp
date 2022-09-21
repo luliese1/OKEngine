@@ -61,17 +61,6 @@ int DXGraphicsEngine::Initialize(GRAPHICSENGINE_ENGINE_DESC& GraphicsEngineDesc)
 
 	m_ResourceManager->Initialize(m_Device);
 
-	D3D11_VIEWPORT ViewPort;
-
-	ViewPort.TopLeftX = 0.0f;
-	ViewPort.TopLeftY = 0.0f;
-	ViewPort.Width = (float)m_ScreenInfo.m_ScreenWidth;
-	ViewPort.Height = (float)m_ScreenInfo.m_ScreenHeight;
-	ViewPort.MinDepth = 0.0f;
-	ViewPort.MaxDepth = 1.0f;
-
-	m_Device->GetContext()->RSSetViewports(1, &ViewPort);
-
 	CreateRenderState();
 	//CreateBasicPass(GraphicsEngineDesc.m_BasicPass);
 
@@ -120,6 +109,7 @@ void DXGraphicsEngine::SetPerFrameConstantBuffer(void* ConstantBuffer)
 		Context->Unmap(perFrameBuffer->GetConstantBuffer().Get(), 0);
 
 		Context->VSSetConstantBuffers(perFrameBuffer->GetRegisterSlot(), 1, perFrameBuffer->GetConstantBuffer().GetAddressOf());
+		Context->PSSetConstantBuffers(perFrameBuffer->GetRegisterSlot(), 1, perFrameBuffer->GetConstantBuffer().GetAddressOf());
 	}
 }
 void DXGraphicsEngine::Present()
@@ -167,6 +157,9 @@ void DXGraphicsEngine::BindRenderPass(std::wstring passName)
 			m_BindingRenderPass = std::static_pointer_cast<RenderPass>(Foundpass);
 
 			m_BindingRenderPass->Begin(m_Device, m_BindingRenderPass->GetDepthStencilView());
+
+			auto PassTextureInfo = m_BindingRenderPass->GetTextureSizeInfo();
+			SetViewport(PassTextureInfo.m_ScreenWidth, PassTextureInfo.m_ScreenHeight);
 
 			std::vector<ComPtr<ID3D11RenderTargetView>> BindingRenderTargets;
 			UINT backbufferCnt = 0;
@@ -227,6 +220,10 @@ void DXGraphicsEngine::BindPostProcessPass(std::wstring passName)
 		{
 			m_BindingPostProcessPass->Begin(m_Device, nullptr);
 
+			auto PassTextureInfo = m_BindingPostProcessPass->GetTextureSizeInfo();
+
+			SetViewport(PassTextureInfo.m_ScreenWidth, PassTextureInfo.m_ScreenHeight);
+
 			std::vector<ComPtr<ID3D11RenderTargetView>> BindingRenderTargets;
 			UINT backbufferCnt = 0;
 			UINT passCnt = 0;
@@ -253,6 +250,7 @@ void DXGraphicsEngine::BindPostProcessPass(std::wstring passName)
 			}
 
 			m_Device->GetContext()->OMSetRenderTargets(BindingRenderTargets.size(), BindingRenderTargets[0].GetAddressOf(), nullptr);
+
 		}
 		else
 		{
@@ -287,7 +285,7 @@ void DXGraphicsEngine::SetPerObjectConstantBuffer(void* bufferSrc)
 		auto vsSamplerBuff = shaderSet.m_VertexShader->GetSamplerBuffer();
 		for (const auto& Buffers : vsSamplerBuff)
 		{
-			context->VSSetSamplers(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetSamplerState(101)->GetSamplerState().GetAddressOf());
+			context->VSSetSamplers(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetSamplerState(Buffers->GetBufferName())->GetSamplerState().GetAddressOf());
 		}
 	}
 
@@ -310,7 +308,7 @@ void DXGraphicsEngine::SetPerObjectConstantBuffer(void* bufferSrc)
 		auto psSamplerBuff = shaderSet.m_PixelShader->GetSamplerBuffer();
 		for (const auto& Buffers : psSamplerBuff)
 		{
-			context->PSSetSamplers(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetSamplerState(101)->GetSamplerState().GetAddressOf());
+			context->PSSetSamplers(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetSamplerState(Buffers->GetBufferName())->GetSamplerState().GetAddressOf());
 		}
 	}
 }
@@ -375,7 +373,7 @@ void DXGraphicsEngine::StartRender_Excute()
 	// 그려질 화면 크기를 설정 및 초기화
 	m_Device->Flush();
 	ComPtr<ID3D11DeviceContext> Context = m_Device->GetContext();
-	Context->ClearRenderTargetView(m_SwapChain->GetBackBufferRenderTarget().Get(), DirectX::Colors::NavajoWhite);
+	Context->ClearRenderTargetView(m_SwapChain->GetBackBufferRenderTarget().Get(), DirectX::Colors::Transparent);
 
 	m_BindingPostProcessPass.reset();
 	m_BindingRenderPass.reset();
@@ -429,7 +427,7 @@ void DXGraphicsEngine::Render_Execute(size_t MeshID, void* bufferSrc)
 		auto vsSamplerBuff = vs->GetSamplerBuffer();
 		for (const auto& Buffers : vsSamplerBuff)
 		{
-			context->VSSetSamplers(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetSamplerState(nowMesh->m_SamplerId)->GetSamplerState().GetAddressOf());
+			context->VSSetSamplers(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetSamplerState(Buffers->GetBufferName())->GetSamplerState().GetAddressOf());
 		}
 	}
 
@@ -463,7 +461,7 @@ void DXGraphicsEngine::Render_Execute(size_t MeshID, void* bufferSrc)
 		auto psSamplerBuff = ps->GetSamplerBuffer();
 		for (const auto& Buffers : psSamplerBuff)
 		{
-			context->PSSetSamplers(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetSamplerState(nowMesh->m_SamplerId)->GetSamplerState().GetAddressOf());
+			context->PSSetSamplers(Buffers->GetRegisterSlot(), 1, m_ResourceManager->GetSamplerState(Buffers->GetBufferName())->GetSamplerState().GetAddressOf());
 		}
 	}
 
@@ -520,6 +518,37 @@ void DXGraphicsEngine::Present_Execute()
 
 }
 
+void DXGraphicsEngine::SetViewport(float width, float height)
+{
+	D3D11_VIEWPORT ViewPort;
+
+	ViewPort.TopLeftX = 0.0f;
+	ViewPort.TopLeftY = 0.0f;
+	if (width <= 0)
+	{
+		ViewPort.Width = m_ScreenInfo.m_ScreenWidth;
+	}
+	else
+	{
+		ViewPort.Width = width;
+
+	}
+
+	if (height <= 0)
+	{
+		ViewPort.Height = m_ScreenInfo.m_ScreenHeight;
+	}
+	else
+	{
+		ViewPort.Height = height;
+	}
+
+	ViewPort.MinDepth = 0.0f;
+	ViewPort.MaxDepth = 1.0f;
+
+	m_Device->GetContext()->RSSetViewports(1, &ViewPort);
+}
+
 void DXGraphicsEngine::Finalize()
 {
 	m_SwapChain->Finalize();
@@ -572,6 +601,11 @@ void DXGraphicsEngine::CreateSamplerState(size_t SamplerID)
 
 }
 
+void DXGraphicsEngine::CreateRasterizerState(size_t RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc)
+{
+	//m_ResourceManager->CreateRasterizerState(RasterizerID, rasterizerDesc);
+}
+
 void DXGraphicsEngine::DeleteMesh(size_t MeshID)
 {
 	m_ResourceManager->DeleteMesh(MeshID);
@@ -594,7 +628,6 @@ void DXGraphicsEngine::DeleteTexture(size_t TextureID)
 
 void DXGraphicsEngine::DeleteSamplerState(size_t SamplerID)
 {
-	m_ResourceManager->DeleteSamplerState(SamplerID);
 }
 
 
@@ -608,17 +641,16 @@ void DXGraphicsEngine::CreateRenderState()
 
 	//카메라에서 봤을떄... 
 	solidDesc.FrontCounterClockwise = false;
-	solidDesc.DepthClipEnable = true;
 
 	solidDesc.AntialiasedLineEnable = true;
 	solidDesc.MultisampleEnable = true;
+	solidDesc.ScissorEnable = false;
 
 	solidDesc.DepthBias = 0;
 	solidDesc.DepthBiasClamp = 0.0f;
 	solidDesc.DepthClipEnable = true;
-
-	solidDesc.ScissorEnable = false;
 	solidDesc.SlopeScaledDepthBias = 0.0f;
+
 
 	m_Device->GetDevice()->CreateRasterizerState(&solidDesc, &m_SolidRS);
 
@@ -629,16 +661,14 @@ void DXGraphicsEngine::CreateRenderState()
 
 	//카메라에서 봤을떄... 
 	wireDesc.FrontCounterClockwise = false;
-	wireDesc.DepthClipEnable = true;
 
 	wireDesc.AntialiasedLineEnable = true;
 	wireDesc.MultisampleEnable = true;
+	wireDesc.ScissorEnable = false;
 
 	wireDesc.DepthBias = 0;
 	wireDesc.DepthBiasClamp = 0.0f;
 	wireDesc.DepthClipEnable = true;
-
-	wireDesc.ScissorEnable = false;
 	wireDesc.SlopeScaledDepthBias = 0.0f;
 
 	m_Device->GetDevice()->CreateRasterizerState(&wireDesc, &m_WireRS);

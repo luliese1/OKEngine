@@ -18,7 +18,5 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> GetSamplerState() const { return m_SamplerState; }
 private:
 	ComPtr<ID3D11SamplerState> m_SamplerState;
-	UINT m_SlotIdx;
-
 };
 
