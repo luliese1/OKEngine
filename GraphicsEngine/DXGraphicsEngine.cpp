@@ -326,8 +326,8 @@ void DXGraphicsEngine::SetTextures(GRAPHICSENGINE_SHADER_RESOURCE_INPUT_LAYOUT* 
 		case SHADER_RESOURCE_SOURCE::BACKBUFFER:
 			{
 				//bindingTextures.emplace_back(m_BasicPass->GetShaderResourceView());
-				break;
 			}
+			break;
 		case SHADER_RESOURCE_SOURCE::PASS:
 			{
 				bindingTextures.push_back(m_ResourceManager->GetPass(inputlayout.m_ResourceName)->GetShaderResourceView((UINT)inputlayout.m_ResourceIndex));

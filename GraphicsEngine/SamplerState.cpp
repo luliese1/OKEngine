@@ -12,6 +12,8 @@ void SamplerState::Initialize(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE te
 	samplerDesc.AddressW = textureOutside;
 	samplerDesc.AddressV = textureOutside;
 
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+
 	device->GetDevice()->CreateSamplerState(&samplerDesc, m_SamplerState.GetAddressOf());
 }
 

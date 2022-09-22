@@ -71,8 +71,9 @@ PS_OUT PSMain(PS_INPUT Input) : SV_TARGET
     psOut.Normal = float4(Input.Normal, 1.0f);
 #endif
     
-    psOut.Depth = float4(Input.PosH.zzz, 1.0f);
-    psOut.PosW = float4(Input.PosW.xyz, 1.0f);
+    psOut.Depth = Input.PosH.zzzz;
+    psOut.PosW = float4(Input.PosW, 1.0f);
+    
     //float fLighting = saturate(dot(g_vLightDir, Input.Normal));
     //fLighting = max(fLighting, g_fAmbient);
     return psOut;

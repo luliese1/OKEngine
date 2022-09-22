@@ -79,9 +79,10 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 0},
 		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 1},
 		{SHADER_RESOURCE_SOURCE::PASS, L"Basic", 3},
-		{SHADER_RESOURCE_SOURCE::PASSDEPTH, L"Basic", 3},
+		{SHADER_RESOURCE_SOURCE::PASSDEPTH, L"Shadow", 0},
 	};
-	Graphics->SetTextures(lightInput, 3);
+	Graphics->SetPerObjectConstantBuffer(nullptr);
+	Graphics->SetTextures(lightInput, 4);
 	Graphics->ExecutePass();
 
 	Graphics->Present();

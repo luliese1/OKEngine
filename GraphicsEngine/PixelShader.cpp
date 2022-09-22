@@ -8,7 +8,7 @@
 bool PixelShader::Initialize(std::wstring path, GRAPHICSENGINE_SHADER_MACRO_DESC* macro, UINT macroCnt, std::shared_ptr<Device>& device)
 {
 	//blob에 데이터를 저장?로드함?
-	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
+	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
 #ifdef _DEBUG
 	flags |= D3DCOMPILE_DEBUG;
 #endif

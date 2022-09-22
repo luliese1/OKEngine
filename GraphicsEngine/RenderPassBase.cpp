@@ -45,7 +45,7 @@ void PassBase::OnResize(ScreenInfo& sinfo, std::shared_ptr<Device> device)
 
 		for (auto iter : m_RenderTargetTexture)
 		{
-			iter->OnResize(DXGI_FORMAT_R8G8B8A8_UNORM, tempInfo, device);
+			iter->OnResize(DXGI_FORMAT_R32G32B32A32_FLOAT, tempInfo, device);
 		}
 
 		SetRenderTargetViewListForBinding();

@@ -72,7 +72,7 @@ void RenderPass::Initialize(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& p
 		case SHADER_RENDER_TARGET::PASS:
 			{
 				std::shared_ptr<RenderTargetView> tempRTT = std::make_shared<RenderTargetView>();
-				tempRTT->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, tempInfo, device);
+				tempRTT->Initialize(DXGI_FORMAT_R32G32B32A32_FLOAT, tempInfo, device);
 				m_RenderTargetTexture.emplace_back(tempRTT);
 
 				m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);
@@ -128,7 +128,7 @@ void RenderPass::OnResize(ScreenInfo& sinfo, std::shared_ptr<Device> device)
 
 		for (auto iter : m_RenderTargetTexture)
 		{
-			iter->OnResize(DXGI_FORMAT_R8G8B8A8_UNORM, tempInfo, device);
+			iter->OnResize(DXGI_FORMAT_R32G32B32A32_FLOAT, tempInfo, device);
 		}
 
 		m_DepthStencilView->OnResize(tempInfo, DXGI_FORMAT_R24G8_TYPELESS, device);
