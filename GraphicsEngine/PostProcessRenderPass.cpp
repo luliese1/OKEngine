@@ -20,6 +20,7 @@ PostProcessRenderPass::PostProcessRenderPass() : PassBase(ePassType::PostProcess
 void PostProcessRenderPass::Initialize(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& passDesc, std::shared_ptr<Device> device)
 {
 	m_PassName = passDesc.m_PassName;
+	m_RasterizerState = passDesc.m_RasterizerStateName;
 
 	if (m_VertexShader == nullptr)
 	{

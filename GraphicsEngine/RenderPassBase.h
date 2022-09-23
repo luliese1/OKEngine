@@ -25,6 +25,7 @@ public:
 	PassBase(ePassType passType);
 	virtual ~PassBase() = default;
 
+	
 public:
 	virtual void Initialize(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& passDesc, const std::shared_ptr<Device> device) abstract;
 
@@ -48,6 +49,8 @@ public:
 	const ePassType GetPassType() const { return m_PassType; }
 	ScreenInfo GetTextureSizeInfo() const { return m_TextureSizeInfo; }
 
+	const std::wstring GetRasterizerState() { return m_RasterizerState; }
+	void SetRasterizerState(std::wstring val) { m_RasterizerState = val; }
 
 protected:
 	virtual void SetRenderTargetViewListForBinding();
@@ -64,6 +67,8 @@ protected:
 	//나중에 MRT할때를 대비하여 RTT를 만들어둔다.
 	std::vector<std::shared_ptr<RenderTargetView>> m_RenderTargetTexture;
 	std::vector<ComPtr<ID3D11RenderTargetView>> m_BindingRenderTargetTexture;
+
+	std::wstring m_RasterizerState;
 
 private:
 	PassBase() = default;

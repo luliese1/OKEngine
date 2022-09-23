@@ -20,16 +20,36 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	
 	// -------------------------- SamplerState ----------------------------
 
-	//m_GraphicsEngine->CreateSamplerState()
+	GRAPHICSENGINE_RASTERIZER_DESC shadowRasterizerDesc;
+	// 24비트의 깊이버퍼 r = 1/2^24
+	// bias = depthbias * r + slopescaleddepthbias * maxDepthbias
+
+	shadowRasterizerDesc.m_DepthBias = 100000;
+	shadowRasterizerDesc.m_DepthBiasClamp = 0.0f;
+	shadowRasterizerDesc.m_SlopeScaledDepthBias = 1.0f;
+
+	m_GraphicsEngine->CreateRasterizerState(L"Shadow", shadowRasterizerDesc);
+
+	GRAPHICSENGINE_RASTERIZER_DESC solidRasterizerDesc;
+
+	m_GraphicsEngine->CreateRasterizerState(L"Solid", solidRasterizerDesc);
+
+	GRAPHICSENGINE_RASTERIZER_DESC wireRasterizerDesc;
+	// 24비트의 깊이버퍼 r = 1/2^24
+	// bias = depthbias * r + slopescaleddepthbias * maxDepthbias
+
+	wireRasterizerDesc.m_FillMode = GRAPHICSENGINE_RASTERIZER_DESC::eFillMode::WIRE;
+
+	m_GraphicsEngine->CreateRasterizerState(L"Wire", wireRasterizerDesc);
 
 	// -------------------------- Rasterizer State ----------------------------
 
 	// --------------------------  RenderPass  ----------------------------
+	// -------------------------- Mesh Shader ----------------------------
 
 	GRAPHICSENGINE_PASS_DESC BasicPass;
 	BasicPass.m_PassName = L"Basic";
 
-	// -------------------------- Mesh Shader ----------------------------
 
 	std::vector<std::vector<GRAPHICSENGINE_SHADER_MACRO_DESC>> staticmacros =
 	{
@@ -61,7 +81,10 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	BasicPass.m_RenderTargetLayout = BaseShaderOutput;
 	BasicPass.m_OutputTexturesCount = 4;
 
+	BasicPass.m_RasterizerStateName = L"Solid";
+
 	m_GraphicsEngine->CreateRenderPass(BasicPass);
+
 
 	// -------------------------- Shadow Shader ----------------------------
 
@@ -91,6 +114,7 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	ShadowPass.m_TextureWidth = 2048;
 	ShadowPass.m_TextureHeight = 2048;
 
+	ShadowPass.m_RasterizerStateName = L"Shadow";
 	m_GraphicsEngine->CreateRenderPass(ShadowPass);
 
 	// -------------------------- Deferred Lighting ----------------------------
@@ -114,6 +138,8 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 	};
 
 	LightingPass.m_RenderTargetLayout = LightRenderTargetLayouts;
+	LightingPass.m_RasterizerStateName = L"Solid";
+
 	m_GraphicsEngine->CreatePostProcessPass(LightingPass);
 
 	// -------------------------- Post Processing ----------------------------

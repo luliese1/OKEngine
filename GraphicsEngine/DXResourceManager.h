@@ -55,8 +55,8 @@ public:
 	std::shared_ptr<Material> GetMaterial(size_t);
 	std::shared_ptr<Texture> GetTexture(size_t);
 	std::shared_ptr<PassBase> GetPass(std::wstring);
-
 	std::shared_ptr<SamplerState> GetSamplerState(std::wstring);
+	ComPtr<ID3D11RasterizerState> GetRaterizerState(std::wstring);
 
 	void TestFunction();
 

@@ -132,16 +132,20 @@ void DXResourceManager::CreateRasterizerState(std::wstring RasterizerID, const G
 	D3D11rasterizerDesc.FillMode = (D3D11_FILL_MODE)(int)rasterizerDesc.m_FillMode;
 	D3D11rasterizerDesc.CullMode = (D3D11_CULL_MODE)(int)rasterizerDesc.m_CullMode;
 
+	D3D11rasterizerDesc.FrontCounterClockwise = false;
+
 	D3D11rasterizerDesc.DepthBias = rasterizerDesc.m_DepthBias;
 	D3D11rasterizerDesc.DepthBiasClamp = rasterizerDesc.m_DepthBiasClamp;
 	D3D11rasterizerDesc.SlopeScaledDepthBias = rasterizerDesc.m_SlopeScaledDepthBias;
 
 	D3D11rasterizerDesc.DepthClipEnable = rasterizerDesc.m_DepthClipEnable;
-	D3D11rasterizerDesc.ScissorEnable = rasterizerDesc.m_ScissorEnable;
+	D3D11rasterizerDesc.ScissorEnable = false;
 	D3D11rasterizerDesc.MultisampleEnable = rasterizerDesc.m_MultiSampleEnable;
 	D3D11rasterizerDesc.AntialiasedLineEnable = rasterizerDesc.m_AntialiasedLineEnable;
 
 	m_Device->GetDevice()->CreateRasterizerState(&D3D11rasterizerDesc, rasterizerState.GetAddressOf());
+
+	m_RasterizerState.emplace(RasterizerID, rasterizerState);
 }
 
 void DXResourceManager::CreateRenderPass(ScreenInfo& sinfo, const GRAPHICSENGINE_PASS_DESC& shaderPassDesc)
@@ -403,6 +407,15 @@ std::shared_ptr<SamplerState> DXResourceManager::GetSamplerState(std::wstring Ob
 {
 	auto ret = m_SamplerState.find(ObjecID);
 	if (ret == m_SamplerState.end())
+		return nullptr;
+
+	return ret->second;
+}
+
+Microsoft::WRL::ComPtr<ID3D11RasterizerState> DXResourceManager::GetRaterizerState(std::wstring ObjecID)
+{
+	auto ret = m_RasterizerState.find(ObjecID);
+	if (ret == m_RasterizerState.end())
 		return nullptr;
 
 	return ret->second;

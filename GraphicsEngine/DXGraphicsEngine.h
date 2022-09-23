@@ -78,7 +78,7 @@ public:
 	virtual void CreateIndexBuffer(void* indices, int indexxCount, size_t MeshID, UINT subMeshID) override;
 	virtual void CreateTexture(std::wstring path, size_t TextureID) override;
 	virtual void CreateSamplerState(size_t SamplerID) override;
-	virtual void CreateRasterizerState(size_t RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc) override;
+	virtual void CreateRasterizerState(std::wstring RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc) override;
 
 	//데이터 삭제함수
 	virtual void DeleteMesh(size_t MeshID) override;
@@ -115,9 +115,6 @@ private:
 	//나중에 이친구들도 따로 Renderer로 뺴고싶지만,... 
 	std::shared_ptr<Device> m_Device;
 	std::shared_ptr<SwapChain> m_SwapChain;
-
-	ID3D11RasterizerState* m_SolidRS;
-	ID3D11RasterizerState* m_WireRS;
 
 	std::shared_ptr<RenderPass> m_BindingRenderPass;
 	std::shared_ptr<PassBase> m_BindingPostProcessPass;

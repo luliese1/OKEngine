@@ -137,7 +137,7 @@ struct GRAPHICENGINELIB_API GRAPHICSENGINE_RASTERIZER_DESC
 		CULL_BACK = 3
 	};
 
-	eFillMode m_FillMode = eFillMode::WIRE;
+	eFillMode m_FillMode = eFillMode::SOLID;
 	eCullMode m_CullMode = eCullMode::CULL_NONE;
 
 	int m_DepthBias = 0;

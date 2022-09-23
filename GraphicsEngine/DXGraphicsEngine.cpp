@@ -29,7 +29,7 @@
 
 
 DXGraphicsEngine::DXGraphicsEngine() :
-	m_hInst(nullptr), m_hWnd(nullptr), m_Device(std::make_shared<Device>()), m_SwapChain(std::make_shared<SwapChain>()), m_ResourceManager(std::make_shared<DXResourceManager>()), m_ScreenInfo(), m_SolidRS(nullptr), m_WireRS(nullptr), m_RenderInfoManager(std::make_shared<RenderInfoManager>())
+	m_hInst(nullptr), m_hWnd(nullptr), m_Device(std::make_shared<Device>()), m_SwapChain(std::make_shared<SwapChain>()), m_ResourceManager(std::make_shared<DXResourceManager>()), m_ScreenInfo(), m_RenderInfoManager(std::make_shared<RenderInfoManager>())
 {
 }
 
@@ -61,7 +61,7 @@ int DXGraphicsEngine::Initialize(GRAPHICSENGINE_ENGINE_DESC& GraphicsEngineDesc)
 
 	m_ResourceManager->Initialize(m_Device);
 
-	CreateRenderState();
+	//CreateRenderState();
 	//CreateBasicPass(GraphicsEngineDesc.m_BasicPass);
 
 	m_SpriteBatch = std::make_unique<DirectX::SpriteBatch>(m_Device->GetContext().Get());
@@ -197,6 +197,10 @@ void DXGraphicsEngine::BindRenderPass(std::wstring passName)
 				m_Device->GetContext()->OMSetRenderTargets(0, nullptr, m_BindingRenderPass->GetDepthStencilView()->GetDepthStencilView().Get());
 			}
 
+			auto rasterizerState = m_ResourceManager->GetRaterizerState(m_BindingRenderPass->GetRasterizerState());
+			//래스터라이저 세팅
+			m_Device->GetContext()->RSSetState(rasterizerState.Get());
+
 		}
 		else
 		{
@@ -250,6 +254,10 @@ void DXGraphicsEngine::BindPostProcessPass(std::wstring passName)
 			}
 
 			m_Device->GetContext()->OMSetRenderTargets(BindingRenderTargets.size(), BindingRenderTargets[0].GetAddressOf(), nullptr);
+
+			auto rasterizerState = m_ResourceManager->GetRaterizerState(m_BindingPostProcessPass->GetRasterizerState());
+			//래스터라이저 세팅
+			m_Device->GetContext()->RSSetState(rasterizerState.Get());
 
 		}
 		else
@@ -363,8 +371,6 @@ void DXGraphicsEngine::ExecutePass()
 {
 	auto context = m_Device->GetContext();
 
-	//래스터라이저 세팅
-	context->RSSetState(m_SolidRS);
 	m_BindingPostProcessPass->End(m_Device);
 }
 
@@ -486,10 +492,6 @@ void DXGraphicsEngine::Render_Execute(size_t MeshID, void* bufferSrc)
 	context->PSSetShader(ps->GetPixelShader().Get(), nullptr, 0);
 	context->IASetInputLayout(vs->GetInputLayout().Get());
 
-
-	//래스터라이저 세팅
-	context->RSSetState(m_SolidRS);
-
 	//그리기
 	context->DrawIndexed(indices->GetIndexCount(), 0, 0);
 }
@@ -553,8 +555,6 @@ void DXGraphicsEngine::Finalize()
 {
 	m_SwapChain->Finalize();
 	//TODO 클래스와 시킬것.
-	m_SolidRS->Release();
-	m_WireRS->Release();
 
 	m_SwapChain.reset();
 
@@ -601,9 +601,9 @@ void DXGraphicsEngine::CreateSamplerState(size_t SamplerID)
 
 }
 
-void DXGraphicsEngine::CreateRasterizerState(size_t RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc)
+void DXGraphicsEngine::CreateRasterizerState(std::wstring RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc)
 {
-	//m_ResourceManager->CreateRasterizerState(RasterizerID, rasterizerDesc);
+	m_ResourceManager->CreateRasterizerState(RasterizerID, rasterizerDesc);
 }
 
 void DXGraphicsEngine::DeleteMesh(size_t MeshID)
@@ -633,43 +633,43 @@ void DXGraphicsEngine::DeleteSamplerState(size_t SamplerID)
 
 void DXGraphicsEngine::CreateRenderState()
 {
-	// Render_Execute State 중 Rasterizer State
-	D3D11_RASTERIZER_DESC solidDesc;
-	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	solidDesc.FillMode = D3D11_FILL_SOLID;
-	solidDesc.CullMode = D3D11_CULL_NONE;
+	//// Render_Execute State 중 Rasterizer State
+	//D3D11_RASTERIZER_DESC solidDesc;
+	//ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
+	//solidDesc.FillMode = D3D11_FILL_SOLID;
+	//solidDesc.CullMode = D3D11_CULL_NONE;
 
-	//카메라에서 봤을떄... 
-	solidDesc.FrontCounterClockwise = false;
+	////카메라에서 봤을떄... 
+	//solidDesc.FrontCounterClockwise = false;
 
-	solidDesc.AntialiasedLineEnable = true;
-	solidDesc.MultisampleEnable = true;
-	solidDesc.ScissorEnable = false;
+	//solidDesc.AntialiasedLineEnable = true;
+	//solidDesc.MultisampleEnable = true;
+	//solidDesc.ScissorEnable = false;
 
-	solidDesc.DepthBias = 0;
-	solidDesc.DepthBiasClamp = 0.0f;
-	solidDesc.DepthClipEnable = true;
-	solidDesc.SlopeScaledDepthBias = 0.0f;
+	//solidDesc.DepthBias = 0;
+	//solidDesc.DepthBiasClamp = 0.0f;
+	//solidDesc.DepthClipEnable = true;
+	//solidDesc.SlopeScaledDepthBias = 0.0f;
 
 
-	m_Device->GetDevice()->CreateRasterizerState(&solidDesc, &m_SolidRS);
+	//m_Device->GetDevice()->CreateRasterizerState(&solidDesc, &m_SolidRS);
 
-	D3D11_RASTERIZER_DESC wireDesc;
-	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireDesc.FillMode = D3D11_FILL_WIREFRAME;
-	wireDesc.CullMode = D3D11_CULL_NONE;
+	//D3D11_RASTERIZER_DESC wireDesc;
+	//ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
+	//wireDesc.FillMode = D3D11_FILL_WIREFRAME;
+	//wireDesc.CullMode = D3D11_CULL_NONE;
 
-	//카메라에서 봤을떄... 
-	wireDesc.FrontCounterClockwise = false;
+	////카메라에서 봤을떄... 
+	//wireDesc.FrontCounterClockwise = false;
 
-	wireDesc.AntialiasedLineEnable = true;
-	wireDesc.MultisampleEnable = true;
-	wireDesc.ScissorEnable = false;
+	//wireDesc.AntialiasedLineEnable = true;
+	//wireDesc.MultisampleEnable = true;
+	//wireDesc.ScissorEnable = false;
 
-	wireDesc.DepthBias = 0;
-	wireDesc.DepthBiasClamp = 0.0f;
-	wireDesc.DepthClipEnable = true;
-	wireDesc.SlopeScaledDepthBias = 0.0f;
+	//wireDesc.DepthBias = 0;
+	//wireDesc.DepthBiasClamp = 0.0f;
+	//wireDesc.DepthClipEnable = true;
+	//wireDesc.SlopeScaledDepthBias = 0.0f;
 
-	m_Device->GetDevice()->CreateRasterizerState(&wireDesc, &m_WireRS);
+	//m_Device->GetDevice()->CreateRasterizerState(&wireDesc, &m_WireRS);
 }

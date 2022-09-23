@@ -64,7 +64,7 @@ public:
 	//Texture
 	virtual void CreateTexture(std::wstring path, size_t TextureID) abstract;
 	virtual void CreateSamplerState(size_t SamplerID) abstract;
-	virtual void CreateRasterizerState(size_t RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc) abstract;
+	virtual void CreateRasterizerState(std::wstring RasterizerID, const GRAPHICSENGINE_RASTERIZER_DESC& rasterizerDesc) abstract;
 
 
 	//리소스 삭제
