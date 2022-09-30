@@ -63,7 +63,6 @@ PS_OUT PSMain(PS_INPUT Input)
    
     //NDC 공간으로 정렬
     ShadowH.xyz /= ShadowH.w;
-    ShadowH.z -= 0.0001f;
     float depth = ShadowH.z;
   
         //텍스쳐 좌표계로 변환

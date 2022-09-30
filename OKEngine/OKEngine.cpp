@@ -69,11 +69,11 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 
 	GRAPHICSENGINE_RENDER_TARGET_OUTPUT_LAYOUT BaseShaderOutput[] =
 	{
-		{SHADER_RENDER_TARGET::PASS, L""},
-		{SHADER_RENDER_TARGET::PASS, L""},
-		{SHADER_RENDER_TARGET::PASS, L""},
-		{SHADER_RENDER_TARGET::PASS, L""},
-		{SHADER_RENDER_TARGET::PASS, L""}
+		{SHADER_RENDER_TARGET::PASS},
+		{SHADER_RENDER_TARGET::PASS},
+		{SHADER_RENDER_TARGET::PASS},
+		{SHADER_RENDER_TARGET::PASS},
+		{SHADER_RENDER_TARGET::PASS}
 	};
 
 	BasicPass.m_ShaderDesc = BaseShaderDesc;
@@ -106,7 +106,7 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 
 	GRAPHICSENGINE_RENDER_TARGET_OUTPUT_LAYOUT shadowShaderOutput[] =
 	{
-		{SHADER_RENDER_TARGET::PASS, L""}
+		{SHADER_RENDER_TARGET::PASS}
 	};
 
 	ShadowPass.m_RenderTargetLayout = shadowShaderOutput;
@@ -134,7 +134,7 @@ bool OKEngine::Initialize(long instance, long handle, int ScreenWidth, int Scree
 
 	GRAPHICSENGINE_RENDER_TARGET_OUTPUT_LAYOUT LightRenderTargetLayouts[] =
 	{
-		{SHADER_RENDER_TARGET::BACKBUFFER, L""}
+		{SHADER_RENDER_TARGET::BACKBUFFER}
 	};
 
 	LightingPass.m_RenderTargetLayout = LightRenderTargetLayouts;

@@ -27,10 +27,10 @@ public:
 	Vector3 GetLookAt() const { return m_LookAt; }
 	void SetLookAt(Vector3 pos);
 
-	DirectX::XMMATRIX& GetProjectionMatrix();
-	DirectX::XMMATRIX GetOthogonalProjectionMatrix();
+	Matrix& GetProjectionMatrix();
+	Matrix GetOthogonalProjectionMatrix();
 
-	DirectX::XMMATRIX& GetViewMatrix();
+	Matrix& GetViewMatrix();
 
 	int GetCameraID() const { return m_CameraID; }
 	void SetCameraID(int val) { m_CameraID = val; }
@@ -45,16 +45,19 @@ public:
 	float GetFOV() const { return m_FOV; }
 	float GetAspect() const { return (float)m_ScreenWidth / (float)m_ScreenHeight; }
 
-	DirectX::XMVECTOR* GetViewFrustumPlain() { return m_Plain; }
+	Vector4* GetViewFrustumPlain() { return m_Plain; }
+	Vector4* GetLocalFrustumVertex() { return m_FrustumVertex; }
 
+	float GetTanHalfHFov() const { return m_tanHalfHFov; }
+	float GetTanHalfVFov() const { return m_tanHalfVFov; }
 private:
 	/// view Mat
 	Vector3 m_LookAt;
 	Vector3 m_Right;
 	Vector3 m_Up;
 
-	DirectX::XMMATRIX m_ViewMatrix;
-	DirectX::XMMATRIX m_Projection;
+	Matrix m_ViewMatrix;
+	Matrix m_Projection;
 
 	/// proj Mat
 	float m_Near;
@@ -68,9 +71,14 @@ private:
 	bool m_UsingNOW;
 
 	//view Frustum
+	//Horizontal
+	float m_tanHalfHFov;
+	//Vertical
+	float m_tanHalfVFov;
+
 	//(평면의 노말, D(거리))
-	DirectX::XMVECTOR m_FrustumVertex[8];
-	DirectX::XMVECTOR m_Plain[6];
+	Vector4 m_FrustumVertex[8];
+	Vector4 m_Plain[6];
 
 	int m_CameraID;
 };

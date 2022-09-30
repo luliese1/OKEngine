@@ -1476,6 +1476,17 @@ inline Vector4 operator* (float S, const Vector4& V) noexcept
     return R;
 }
 
+inline Vector4 operator* (const Vector4& V1, const Matrix& V2) noexcept
+{
+	using namespace DirectX;
+	const XMVECTOR v1 = XMLoadFloat4(&V1);
+    const XMMATRIX v2 = XMLoadFloat4x4(&V2);
+	const XMVECTOR X = XMVector3Transform(v1, v2);
+	Vector4 R;
+	XMStoreFloat4(&R, X);
+	return R;
+}
+
 //------------------------------------------------------------------------------
 // Vector operations
 //------------------------------------------------------------------------------

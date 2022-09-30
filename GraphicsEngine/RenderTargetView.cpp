@@ -14,9 +14,11 @@ RenderTargetView::~RenderTargetView()
 
 }
 
-void RenderTargetView::Initialize(DXGI_FORMAT format, ScreenInfo& SInfo, std::shared_ptr<Device> device)
+void RenderTargetView::Initialize(ScreenInfo& SInfo, std::shared_ptr<Device> device, GRAPHICSENGINE_RENDER_TARGET_OUTPUT_LAYOUT& renderTargetTextureDesc)
 {
 	m_MSAAFlag = SInfo.m_4xMsaaFlag;
+
+	m_TextureDesc = renderTargetTextureDesc.m_TextureDesc;
 
 	ComPtr<ID3D11Device> _device = device->GetDevice();
 
@@ -30,14 +32,14 @@ void RenderTargetView::Initialize(DXGI_FORMAT format, ScreenInfo& SInfo, std::sh
 
 	textureDesc.Width = SInfo.m_ScreenWidth;
 	textureDesc.Height = SInfo.m_ScreenHeight;
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = 1; //텍스쳐 배열의 수
-	textureDesc.Format = format;
-	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.MipLevels = m_TextureDesc.m_MipLevels;
+	textureDesc.ArraySize = m_TextureDesc.m_ArraySize; //텍스쳐 배열의 수
+	textureDesc.Format = (DXGI_FORMAT)m_TextureDesc.m_Format;
+	textureDesc.Usage = (D3D11_USAGE)m_TextureDesc.m_Usage;
 	//렌더타겟과 쉐이더리소스 뷰로 바인드한다.
 	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	textureDesc.CPUAccessFlags = 0; //CPU에서 액세스를 할일이 있을때 추가하자. 
-	textureDesc.MiscFlags = 0; // 특정한 리소스에게 줄 FLAG들.. 
+	textureDesc.CPUAccessFlags = m_TextureDesc.m_CPUAccessFlags; //CPU에서 액세스를 할일이 있을때 추가하자. 
+	textureDesc.MiscFlags = m_TextureDesc.m_MiscFlags; // 특정한 리소스에게 줄 FLAG들.. 
 
 	if (m_MSAAFlag)
 	{
@@ -58,7 +60,6 @@ void RenderTargetView::Initialize(DXGI_FORMAT format, ScreenInfo& SInfo, std::sh
 
 	rtvDesc.Format = textureDesc.Format;
 	rtvDesc.Texture2D.MipSlice = 0;
-
 
 	srvDesc.Format = textureDesc.Format;
 	srvDesc.Texture2D.MostDetailedMip = 0;

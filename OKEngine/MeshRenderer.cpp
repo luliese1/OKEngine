@@ -15,7 +15,7 @@
 
 std::queue<std::shared_ptr<Mesh>> MeshRenderer::m_MeshQueue;
 std::queue<std::shared_ptr<UI>> MeshRenderer::m_UIQueue;
-std::queue< std::shared_ptr<LightBase>> MeshRenderer::m_LightQueue;
+std::queue<std::shared_ptr<LightBase>> MeshRenderer::m_LightQueue;
 
 void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo, std::shared_ptr<IGraphicsEngine> Graphics)
 {
@@ -67,8 +67,7 @@ void MeshRenderer::Render(std::shared_ptr<Camera> camera, RenderInfo renderinfo,
 
 	Graphics->SetPerFrameConstantBuffer(&perFrameBuffer);
 
-	Graphics->BindRenderPass(L"Shadow");
-	Graphics->RenderObjects(staticMeshGUIDs.data(), staticMeshInfo.data(), sizeof(StaticMesh), staticMeshGUIDs.size());
+	ShadowPass(perFrameBuffer, staticMeshGUIDs, staticMeshInfo, Graphics, camera);
 
 	Graphics->BindRenderPass(L"Basic");
 	Graphics->RenderObjects(staticMeshGUIDs.data(), staticMeshInfo.data(), sizeof(StaticMesh), staticMeshGUIDs.size());
@@ -199,3 +198,73 @@ void MeshRenderer::Finalize()
 		m_UIQueue.pop();
 	}
 }
+
+
+void MeshRenderer::ShadowPass(PerFrameBuffer& perFrameBuffer, std::vector<ObjectGUID>& staticMeshGUIDs, std::vector<StaticMesh>& staticMeshInfo, std::shared_ptr<IGraphicsEngine>& Graphics, std::shared_ptr<Camera>& camera)
+{
+	//cascaded Frustum 구하기
+
+	float tanHalfVFov = camera->GetTanHalfVFov();
+	float tanHalfHFov = camera->GetTanHalfHFov();
+
+	const float cascadedInterver[4] = { camera->GetNear(), 6.f, 18.f, camera->GetFar()};
+
+	Matrix CameraTM = camera->GetComponent<Transform>()->GetWorldTM();
+
+	//xnynxfyf
+	//near X,Y / far X, Y 
+
+	Vector4 cascadedfrustum[3][8];
+	Vector4 cascadedCenterPos[3];
+
+	for (UINT frustumIdx = 0; frustumIdx < 3; frustumIdx++)
+	{
+		Vector4 xnynxfyf;
+
+		xnynxfyf.x = tanHalfHFov * cascadedInterver[frustumIdx];
+		xnynxfyf.y = tanHalfVFov * cascadedInterver[frustumIdx];
+		xnynxfyf.z = tanHalfHFov * cascadedInterver[frustumIdx + 1];
+		xnynxfyf.w = tanHalfVFov * cascadedInterver[frustumIdx + 1];
+
+		cascadedfrustum[frustumIdx][0] = {+xnynxfyf.x, +xnynxfyf.y, cascadedInterver[frustumIdx], 1.0f};
+		cascadedfrustum[frustumIdx][1] = {-xnynxfyf.x, +xnynxfyf.y, cascadedInterver[frustumIdx], 1.0f};
+		cascadedfrustum[frustumIdx][2] = {+xnynxfyf.x, -xnynxfyf.y, cascadedInterver[frustumIdx], 1.0f};
+		cascadedfrustum[frustumIdx][3] = {-xnynxfyf.x, -xnynxfyf.y, cascadedInterver[frustumIdx], 1.0f};
+		cascadedfrustum[frustumIdx][4] = {+xnynxfyf.z, +xnynxfyf.w, cascadedInterver[frustumIdx + 1], 1.0f };
+		cascadedfrustum[frustumIdx][5] = {-xnynxfyf.z, +xnynxfyf.w, cascadedInterver[frustumIdx + 1], 1.0f };
+		cascadedfrustum[frustumIdx][6] = {+xnynxfyf.z, -xnynxfyf.w, cascadedInterver[frustumIdx + 1], 1.0f };
+		cascadedfrustum[frustumIdx][7] = {-xnynxfyf.z, -xnynxfyf.w, cascadedInterver[frustumIdx + 1], 1.0f };
+
+		for (UINT vertexIdx = 0; vertexIdx < 8; vertexIdx++)
+		{
+			cascadedfrustum[frustumIdx][vertexIdx]= cascadedfrustum[frustumIdx][vertexIdx] * CameraTM  ;
+			cascadedCenterPos[frustumIdx] += cascadedfrustum[frustumIdx][vertexIdx];
+		}
+
+		cascadedCenterPos[frustumIdx] /= 8.0f;
+
+		float maxRadius = 0.0f;
+
+		for (UINT vertexIdx = 0; vertexIdx < 8; vertexIdx++)
+		{
+			float distance = Vector4::Distance(cascadedfrustum[frustumIdx][vertexIdx], cascadedCenterPos[frustumIdx]);
+			maxRadius = (maxRadius > distance) ? maxRadius : distance;
+		}
+
+		Vector3 maxExtend{maxRadius, maxRadius, maxRadius};
+		Vector3 minExtend{-maxExtend};
+		Vector3 boxExtends = maxExtend - minExtend;
+
+		Vector4 shadowCamPos = cascadedCenterPos[frustumIdx] + perFrameBuffer.m_LightInfo.DirectInfos[0].Direction * minExtend.z;
+
+		//라이트 매트릭스 구하기
+		Matrix lightMat = Matrix::CreateLookAt({shadowCamPos.x, shadowCamPos.y, shadowCamPos.z}, { cascadedCenterPos[frustumIdx].x, cascadedCenterPos[frustumIdx].y, cascadedCenterPos[frustumIdx].z}, {0, 1.f, 0});
+		Matrix::CreateOrthographicOffCenter(minExtend.x, maxExtend.x, minExtend.y, maxExtend.y, 0.0f, boxExtends.z);
+	}
+
+
+
+	Graphics->BindRenderPass(L"Shadow");
+	Graphics->RenderObjects(staticMeshGUIDs.data(), staticMeshInfo.data(), sizeof(StaticMesh), staticMeshGUIDs.size());
+}
+

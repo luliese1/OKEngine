@@ -49,6 +49,8 @@ public:
 
 	static void Finalize();
 private:
+	static void ShadowPass(PerFrameBuffer& perFrameBuffer, std::vector<ObjectGUID>& staticMeshGUIDs, std::vector<StaticMesh>& staticMeshInfo, std::shared_ptr<IGraphicsEngine>& Graphics, std::shared_ptr<Camera>& camera);
+
 	static std::queue<std::shared_ptr<Mesh>> m_MeshQueue;
 	static std::queue< std::shared_ptr<UI>> m_UIQueue;
 	static std::queue< std::shared_ptr<LightBase>> m_LightQueue;

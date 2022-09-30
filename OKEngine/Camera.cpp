@@ -5,7 +5,7 @@
 using namespace DirectX;
 
 Camera::Camera() :
-	m_Near(0.1f), m_Far(50), m_FOV(30), m_ScreenWidth(980), m_ScreenHeight(560), 
+	m_Near(0.1f), m_Far(50), m_FOV(60), m_ScreenWidth(980), m_ScreenHeight(560), 
 	m_Projection(), m_LookAt(), m_Right(), m_Up(), m_ViewMatrix(DirectX::XMMatrixIdentity())
 {
 }
@@ -19,7 +19,7 @@ void Camera::Init()
 {
 	float r = (float)m_ScreenWidth / (float)m_ScreenHeight;
 
-	float fov = (3.141592f * 2.f) * m_FOV / 360;
+	float fov = 3.141592f * m_FOV / 180.f;
 	m_Projection = DirectX::XMMatrixPerspectiveFovLH(fov, r, m_Near, m_Far);
 	CalcLocalViewFrustum();
 
@@ -79,12 +79,14 @@ void Camera::CalcViewMatrix()
 	XMStoreFloat3(&m_Right, Right);
 	XMStoreFloat3(&m_Up, Up);
 
-	m_ViewMatrix.r[0] = XMVectorSelect(D0, Right, g_XMSelect1110.v); //R0.x , R0.y, R0.z, D0
-	m_ViewMatrix.r[1] = XMVectorSelect(D1, Up, g_XMSelect1110.v);
-	m_ViewMatrix.r[2] = XMVectorSelect(D2, LookAt, g_XMSelect1110.v);
-	m_ViewMatrix.r[3] = g_XMIdentityR3.v;
+	DirectX::XMMATRIX ViewMatrix;
 
-	m_ViewMatrix = DirectX::XMMatrixTranspose(m_ViewMatrix);
+	ViewMatrix.r[0] = XMVectorSelect(D0, Right, g_XMSelect1110.v); //R0.x , R0.y, R0.z, D0
+	ViewMatrix.r[1] = XMVectorSelect(D1, Up, g_XMSelect1110.v);
+	ViewMatrix.r[2] = XMVectorSelect(D2, LookAt, g_XMSelect1110.v);
+	ViewMatrix.r[3] = g_XMIdentityR3.v;
+
+	m_ViewMatrix = DirectX::XMMatrixTranspose(ViewMatrix);
 
 	CalcViewFrustumPlain();
 
@@ -95,16 +97,20 @@ void Camera::CalcLocalViewFrustum()
 {
 	float verticalfov = 3.141592f * m_FOV / 180.f;
 	/// 스케일은 width, height, far 이다.
-	float FarHeight = m_Far * tanf(verticalfov / 2);
-	float FarWidth = m_Far * (GetAspect() * tanf(verticalfov / 2));
+
+	m_tanHalfVFov = tanf(verticalfov / 2);
+	m_tanHalfHFov = (GetAspect() * m_tanHalfVFov);
+
+	float FarHeight = m_Far * m_tanHalfHFov;
+	float FarWidth = m_Far * m_tanHalfHFov;
 
 	m_FrustumVertex[0] = { +FarWidth, +FarHeight, m_Far, 1.f };
 	m_FrustumVertex[1] = { -FarWidth, +FarHeight, m_Far, 1.f };
 	m_FrustumVertex[2] = { +FarWidth, -FarHeight, m_Far, 1.f };
 	m_FrustumVertex[3] = { -FarWidth, -FarHeight, m_Far, 1.f };
 
-	float NearHeight = m_Near * tanf(verticalfov / 2);
-	float NearWidth = m_Near * (GetAspect() * tanf(verticalfov / 2));
+	float NearHeight = m_Near * m_tanHalfVFov;
+	float NearWidth = m_Near * m_tanHalfHFov;
 
 	m_FrustumVertex[4] = { +NearWidth, +NearHeight, m_Near, 1.f };
 	m_FrustumVertex[5] = { -NearWidth, +NearHeight, m_Near, 1.f };
@@ -141,7 +147,7 @@ void Camera::CalcViewFrustumPlain()
 
 }
 
-DirectX::XMMATRIX& Camera::GetViewMatrix()
+Matrix& Camera::GetViewMatrix()
 {
 	return m_ViewMatrix;
 }
@@ -181,12 +187,12 @@ void Camera::SetLookAt(Vector3 pos)
 	transform->SetRotation({ pitch, yaw, roll });
 }
 
-DirectX::XMMATRIX& Camera::GetProjectionMatrix()
+Matrix& Camera::GetProjectionMatrix()
 {
 	return m_Projection;
 }
 
-DirectX::XMMATRIX Camera::GetOthogonalProjectionMatrix()
+Matrix Camera::GetOthogonalProjectionMatrix()
 {
 	return DirectX::XMMatrixOrthographicLH(m_ScreenWidth, m_ScreenHeight, m_Near, m_Far);
 }

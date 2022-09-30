@@ -66,7 +66,7 @@ void PostProcessRenderPass::Initialize(ScreenInfo& sinfo, const GRAPHICSENGINE_P
 		case SHADER_RENDER_TARGET::PASS:
 			{
 				std::shared_ptr<RenderTargetView> tempRTT = std::make_shared<RenderTargetView>();
-				tempRTT->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, sinfo, device);
+				tempRTT->Initialize(sinfo, device, passDesc.m_RenderTargetLayout[cnt]);
 				m_RenderTargetTexture.emplace_back(tempRTT);
 
 				m_RenderTargetInfo.emplace_back(passDesc.m_RenderTargetLayout[cnt]);

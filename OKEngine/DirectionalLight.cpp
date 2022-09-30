@@ -25,9 +25,7 @@ Matrix DirectionalLight::GetProjectionMatrix()
 
 Matrix DirectionalLight::GetViewMatrix()
 {
-	Vector3 LightPosition = { 0.f, 10.f, 0.f };
-
-	return (m_Transform.lock()->GetWorldTM() * Matrix::CreateTranslation(LightPosition)).Invert();
+	return m_Transform.lock()->GetWorldTM();
 }
 
 void DirectionalLight::SetAmbient(Vector4 input)

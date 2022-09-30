@@ -22,8 +22,9 @@ void TransformUpdater::Update()
 {
 	for (size_t i = 0; i < m_Cameras.size(); i++)
 	{
+		m_Cameras.front()->CalcLocalViewFrustum();
+		m_Cameras.front()->CalcViewFrustumPlain();
 		m_Cameras.front()->CalcViewMatrix();
-
 		m_Cameras.pop();
 	}
 

@@ -10,7 +10,7 @@ public:
 	RenderTargetView();
 	~RenderTargetView();
 
-	void Initialize(DXGI_FORMAT format, ScreenInfo& SInfo, std::shared_ptr<Device> device);
+	void Initialize(ScreenInfo& SInfo, std::shared_ptr<Device> device, GRAPHICSENGINE_RENDER_TARGET_OUTPUT_LAYOUT& renderTargetTextureDesc);
 	void OnResize(DXGI_FORMAT format, ScreenInfo& Sinfo, std::shared_ptr<Device> device);
 
 	//void SetRenderTarget(ID3D11DeviceContext* context, ID3D11DepthStencilView* depth);
@@ -23,6 +23,8 @@ public:
 	void ResolveSubresource(std::shared_ptr<Device> device);
 private:
 	bool m_MSAAFlag;
+
+	GRAPHICSENGINE_TEXTURE_DESC m_TextureDesc;
 
 	//¸ÖÆ¼»ùÇÃ
 	ComPtr<ID3D11Texture2D> m_Texture;

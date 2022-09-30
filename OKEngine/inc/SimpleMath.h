@@ -138,7 +138,9 @@ namespace DirectX
             Vector2& operator-= (const Vector2& V) noexcept;
             Vector2& operator*= (const Vector2& V) noexcept;
             Vector2& operator*= (float S) noexcept;
-            Vector2& operator/= (float S) noexcept;
+
+
+			Vector2& operator/= (float S) noexcept;
 
             // Unary operators
             Vector2 operator+ () const noexcept { return *this; }
@@ -454,6 +456,7 @@ namespace DirectX
         Vector4 operator/ (const Vector4& V1, const Vector4& V2) noexcept;
         Vector4 operator/ (const Vector4& V, float S) noexcept;
         Vector4 operator* (float S, const Vector4& V) noexcept;
+       Vector4 operator*(const Vector4& V1, const Matrix& V2) noexcept;
 
         //------------------------------------------------------------------------------
         // 4x4 Matrix (assumes right-handed cooordinates)

@@ -13,6 +13,10 @@ void SamplerState::Initialize(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE te
 	samplerDesc.AddressV = textureOutside;
 
 	samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+	samplerDesc.BorderColor[0] = 1.0f;
+	samplerDesc.BorderColor[1] = 1.0f;
+	samplerDesc.BorderColor[2] = 1.0f;
+	samplerDesc.BorderColor[3] = 1.0f;
 
 	device->GetDevice()->CreateSamplerState(&samplerDesc, m_SamplerState.GetAddressOf());
 }

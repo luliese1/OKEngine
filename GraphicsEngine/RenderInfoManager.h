@@ -14,15 +14,10 @@ class RenderInfoManager
 	public:
 		//데이터 넣기 or 업데이트
 		void PushMeshInfo(size_t ID, MeshInfo infos);
-		void PushLightInfo(size_t ID, LightInfo infos);
-
 		//데이터 가져오기 있으면 오브젝트의 포인터 반환, 아니면 nullptr
 		MeshInfo* GetMeshInfo(size_t ID);
-		LightInfo* GetLightInfo(size_t ID);
-
 		//게임오브젝트에서 해제가 되었을때, 그래픽스에서도 똑같이 해제해줍시다.
 		void DeleteMeshInfo(size_t ID);
-		void DeleteLightInfo(size_t ID);
 
 		//씬이 바뀌었을 때에는 모두다 이전 씬의 데이터는 제거해줘야함!..
 		void Clear();
@@ -31,6 +26,5 @@ class RenderInfoManager
 
 		//size_t는 오브젝트의 GUID 입니다.
 		std::unordered_map<size_t, MeshInfo> m_MeshInfo;
-		std::unordered_map<size_t, LightInfo> m_LightInfo;
 };
 

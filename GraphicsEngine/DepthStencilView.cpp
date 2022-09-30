@@ -3,13 +3,10 @@
 #include "Device.h"
 
 
-
-void DepthStencilView::Initialize(std::shared_ptr<Device> device, ScreenInfo& SInfo)
+void DepthStencilView::Initialize(std::shared_ptr<Device> device, ScreenInfo& SInfo, const GRAPHICSENGINE_DEPTH_STENCIL_BUFFER_LAYOUT& depthStencilDesc)
 {
-	//뎁스스텐실 버퍼와 뷰를 생성한다.
-
 	OnResize(SInfo, DXGI_FORMAT_R24G8_TYPELESS, device);
-	
+
 	D3D11_DEPTH_STENCIL_DESC depthstencilStateDesc;
 	//DepthStencilState
 	if (m_DepthStencilState == nullptr)
@@ -62,8 +59,6 @@ void DepthStencilView::Initialize(std::shared_ptr<Device> device, ScreenInfo& SI
 
 		HR(device->GetDevice()->CreateDepthStencilState(&depthstencilStateDesc, &m_DepthDisableStencilState));
 	}
-
-
 }
 
 void DepthStencilView::Finalize()
@@ -86,7 +81,7 @@ void DepthStencilView::OnResize(ScreenInfo& Sinfo, DXGI_FORMAT format, std::shar
 	DepthBufferDesc.Width = Sinfo.m_ScreenWidth; // 크기
 	DepthBufferDesc.Height = Sinfo.m_ScreenHeight;
 	DepthBufferDesc.MipLevels = 1; //밉맵 수준의 개수, 밉맵이란..?
-	DepthBufferDesc.ArraySize = 1; // 텍스처 배열의 텍스처 개수. 깊이스텐실 버퍼에는 하나만 필요
+	DepthBufferDesc.ArraySize = 1; 
 	DepthBufferDesc.Format = format; //텍셀의 형식?
 
 	DepthBufferDesc.Usage = D3D11_USAGE_DEFAULT; //텍스처의 용도. 자원을 GPU가 읽고 써야한다면 Default. CPU는 읽거나 쓸 수 없음\
